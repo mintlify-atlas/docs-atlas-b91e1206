@@ -1,0 +1,197 @@
+---
+title: "Music class"
+description: "Sequence multiple sounds across channels to build multi-channel music tracks in Pyxel."
+---
+
+The `Music` class represents a music track. A music track assigns a sequence of sound slots to each of the four audio channels. When you call `pyxel.playm()`, Pyxel plays each channel's sound list in order, looping back to the first sound when it reaches the end.
+
+Pyxel provides 8 built-in music tracks accessed via `pyxel.musics[0–7]`.
+
+<Note>
+  You can construct a `Music` instance directly with `Music()` as part of the advanced API. For most use cases, edit the built-in tracks through `pyxel.musics`.
+</Note>
+
+## Constructor
+
+```python
+music = pyxel.Music()
+```
+
+Create a new `Music` instance.
+
+## Properties
+
+<ParamField path="Music.seqs" type="list[list[int]]">
+  A two-dimensional list of sound slot numbers (0–63) across channels. Each inner list is the sequence for one channel.
+
+  ```python
+  # Inspect the sound sequences for all channels
+  print(pyxel.musics[0].seqs)
+  ```
+</ParamField>
+
+## Methods
+
+### set
+
+```python
+music.set(seq0, seq1, seq2, ...)
+```
+
+Assign sound sequences to each channel. Pass one list of sound numbers per channel. Pass an empty list `[]` for channels that should be silent.
+
+<ParamField path="seq0, seq1, ..." type="list[int]" required>
+  Sound slot lists for each channel (0–3). An empty list leaves that channel unused.
+</ParamField>
+
+```python
+# Channel 0 plays sounds 0 then 1, channel 1 is silent, channel 2 plays sound 3
+pyxel.musics[0].set([0, 1], [], [3])
+```
+
+---
+
+### save
+
+<Note>
+  `save` is part of the advanced API.
+</Note>
+
+```python
+music.save(filename, sec, ffmpeg=False)
+```
+
+Export the music track as a WAV file.
+
+<ParamField path="filename" type="str" required>
+  Output WAV file path.
+</ParamField>
+
+<ParamField path="sec" type="float" required>
+  Duration to export in seconds.
+</ParamField>
+
+<ParamField path="ffmpeg" type="bool" default="false">
+  Also export an MP4 file using FFmpeg (requires FFmpeg to be installed).
+</ParamField>
+
+## Example: multi-channel music
+
+This example sets up four sounds — a melody, a harmony, a bass line, and a drum pattern — then arranges them across three channels in a music track.
+
+```python
+import pyxel
+
+pyxel.init(160, 120)
+
+# Sound 0: melody (channel 0)
+pyxel.sounds[0].set_notes("c3e3g3e3 c3e3g3r")
+pyxel.sounds[0].set_tones("ssssssss")
+pyxel.sounds[0].set_volumes("76767676")
+pyxel.sounds[0].set_effects("nnnnnnnn")
+pyxel.sounds[0].speed = 15
+
+# Sound 1: harmony (channel 0, second in sequence)
+pyxel.sounds[1].set_notes("g2b2d3b2 g2b2d3r")
+pyxel.sounds[1].set_tones("tttttttt")
+pyxel.sounds[1].set_volumes("55555555")
+pyxel.sounds[1].set_effects("nnnnnnnn")
+pyxel.sounds[1].speed = 15
+
+# Sound 2: bass line (channel 1)
+pyxel.sounds[2].set_notes("c1r c1r c1r c1r")
+pyxel.sounds[2].set_tones("tttttttt")
+pyxel.sounds[2].set_volumes("77777777")
+pyxel.sounds[2].set_effects("nnnnnnnn")
+pyxel.sounds[2].speed = 15
+
+# Sound 3: percussion (channel 2)
+pyxel.sounds[3].set_notes("c0r c0r c0c0r")
+pyxel.sounds[3].set_tones("nnnnnnnn")
+pyxel.sounds[3].set_volumes("75757575")
+pyxel.sounds[3].set_effects("ffffffff")
+pyxel.sounds[3].speed = 15
+
+# Music 0: channel 0 alternates sounds 0 and 1,
+#           channel 1 loops sound 2,
+#           channel 2 loops sound 3
+pyxel.musics[0].set([0, 1], [2], [3])
+
+def update():
+    if pyxel.btnp(pyxel.KEY_SPACE):
+        pyxel.playm(0, loop=True)
+    if pyxel.btnp(pyxel.KEY_Q):
+        pyxel.quit()
+
+def draw():
+    pyxel.cls(0)
+    pyxel.text(4, 4, "SPACE: play  Q: quit", 7)
+
+pyxel.run(update, draw)
+```
+
+## Tone class
+
+<Note>
+  The `Tone` class is part of the advanced API. It lets you replace Pyxel's built-in waveforms (triangle, square, pulse, noise) with custom wavetable or noise-based tones. Access the four built-in tone slots via `pyxel.tones[0–3]`.
+</Note>
+
+### Tone()
+
+```python
+tone = pyxel.Tone()
+```
+
+Create a new `Tone` instance.
+
+### Properties
+
+<ParamField path="Tone.mode" type="int">
+  Synthesis mode for the tone:
+  - `0`: Wavetable — uses the samples defined in `wavetable`
+  - `1`: ShortPeriodNoise — short-period noise generation
+  - `2`: LongPeriodNoise — long-period noise generation
+</ParamField>
+
+<ParamField path="Tone.sample_bits" type="int" default="4">
+  Bit depth for wavetable samples. Sample values in `wavetable` must be in the range `0` to `(2^sample_bits) − 1`. The default of `4` gives a range of 0–15.
+</ParamField>
+
+<ParamField path="Tone.wavetable" type="list[int]">
+  List of sample values defining one period of the waveform. Each value must be within `0` to `(2^sample_bits) − 1`. Used when `mode` is `0` (Wavetable).
+</ParamField>
+
+<ParamField path="Tone.gain" type="float" default="1.0">
+  Volume multiplier applied to the tone. `1.0` is the default amplitude. Reduce to mix quieter custom tones alongside the built-in voices.
+</ParamField>
+
+### Example: custom wavetable tone
+
+```python
+import pyxel
+
+pyxel.init(160, 120)
+
+# Define a sawtooth-like wave in tone slot 0 using 4-bit samples (0-15)
+pyxel.tones[0].mode = 0          # Wavetable mode
+pyxel.tones[0].sample_bits = 4   # 4-bit: values 0-15
+pyxel.tones[0].wavetable = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+pyxel.tones[0].gain = 0.8
+
+# Use tone 0 ("0") in a sound
+pyxel.sounds[0].set_notes("c3d3e3f3g3a3b3c4")
+pyxel.sounds[0].set_tones("00000000")
+pyxel.sounds[0].set_volumes("77777777")
+pyxel.sounds[0].set_effects("nnnnnnnn")
+pyxel.sounds[0].speed = 12
+
+def update():
+    if pyxel.btnp(pyxel.KEY_SPACE):
+        pyxel.play(0, 0)
+
+def draw():
+    pyxel.cls(0)
+    pyxel.text(4, 4, "SPACE: play custom tone", 7)
+
+pyxel.run(update, draw)
+```

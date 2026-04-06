@@ -1,0 +1,651 @@
+---
+title: "Graphics"
+description: "Drawing functions, palette variables, image banks, tilemaps, and color constants for Pyxel's graphics API."
+---
+
+## Variables
+
+<ParamField path="colors" type="list[int]">
+  List of the palette display colors. Specified by 24-bit numerical value. Supports Python list operations.
+
+  ```python
+  old_colors = list(pyxel.colors)
+  pyxel.colors[15] = 0x112233
+  ```
+</ParamField>
+
+<ParamField path="images" type="list[Image]">
+  List of the image banks (instances of the Image class) (0-2).
+
+  ```python
+  pyxel.images[0].load(0, 0, "title.png")
+  ```
+</ParamField>
+
+<ParamField path="tilemaps" type="list[Tilemap]">
+  List of the tilemaps (instances of the Tilemap class) (0-7).
+</ParamField>
+
+### Advanced variables
+
+<ParamField path="screen" type="Image">
+  The screen image (Image class instance).
+</ParamField>
+
+<ParamField path="cursor" type="Image">
+  The cursor image (Image class instance).
+</ParamField>
+
+<ParamField path="font" type="Image">
+  The font image (Image class instance).
+</ParamField>
+
+---
+
+## Drawing functions
+
+### clip
+
+Set the drawing area of the screen from (x, y) with a width of w and a height of h. Call `clip()` with no arguments to reset to full screen.
+
+<ParamField path="x" type="float">
+  X coordinate of the upper-left corner.
+</ParamField>
+
+<ParamField path="y" type="float">
+  Y coordinate of the upper-left corner.
+</ParamField>
+
+<ParamField path="w" type="float">
+  Width of the clipping area.
+</ParamField>
+
+<ParamField path="h" type="float">
+  Height of the clipping area.
+</ParamField>
+
+---
+
+### camera
+
+Set the drawing offset to (x, y). All subsequent drawing operations will be shifted by (-x, -y). Call `camera()` with no arguments to reset the offset to (0, 0).
+
+<ParamField path="x" type="float">
+  X coordinate.
+</ParamField>
+
+<ParamField path="y" type="float">
+  Y coordinate.
+</ParamField>
+
+---
+
+### pal
+
+Replace color `col1` with `col2` when drawing. Call `pal()` with no arguments to reset the palette to the initial state.
+
+<ParamField path="col1" type="int">
+  Color to replace.
+</ParamField>
+
+<ParamField path="col2" type="int">
+  Replacement color.
+</ParamField>
+
+---
+
+### dither
+
+Apply dithering (pseudo-transparency) when drawing.
+
+<ParamField path="alpha" type="float">
+  Opacity in the range 0.0–1.0. 0.0 is fully transparent, 1.0 is fully opaque.
+</ParamField>
+
+---
+
+### cls
+
+Clear the screen with the specified color.
+
+<ParamField path="col" type="int">
+  Color.
+</ParamField>
+
+---
+
+### pget
+
+Get the color of the pixel at (x, y).
+
+<ParamField path="x" type="float">
+  X coordinate.
+</ParamField>
+
+<ParamField path="y" type="float">
+  Y coordinate.
+</ParamField>
+
+<ResponseField name="return" type="int">
+  Color of the pixel.
+</ResponseField>
+
+---
+
+### pset
+
+Draw a pixel of the specified color at (x, y).
+
+<ParamField path="x" type="float">
+  X coordinate.
+</ParamField>
+
+<ParamField path="y" type="float">
+  Y coordinate.
+</ParamField>
+
+<ParamField path="col" type="int">
+  Color.
+</ParamField>
+
+---
+
+### line
+
+Draw a line of the specified color from (x1, y1) to (x2, y2).
+
+<ParamField path="x1" type="float">
+  Start X coordinate.
+</ParamField>
+
+<ParamField path="y1" type="float">
+  Start Y coordinate.
+</ParamField>
+
+<ParamField path="x2" type="float">
+  End X coordinate.
+</ParamField>
+
+<ParamField path="y2" type="float">
+  End Y coordinate.
+</ParamField>
+
+<ParamField path="col" type="int">
+  Color.
+</ParamField>
+
+---
+
+### rect
+
+Draw a filled rectangle of width w, height h, and the specified color at (x, y).
+
+<ParamField path="x" type="float">
+  X coordinate.
+</ParamField>
+
+<ParamField path="y" type="float">
+  Y coordinate.
+</ParamField>
+
+<ParamField path="w" type="float">
+  Width.
+</ParamField>
+
+<ParamField path="h" type="float">
+  Height.
+</ParamField>
+
+<ParamField path="col" type="int">
+  Color.
+</ParamField>
+
+---
+
+### rectb
+
+Draw the outline of a rectangle of width w, height h, and the specified color at (x, y).
+
+<ParamField path="x" type="float">
+  X coordinate.
+</ParamField>
+
+<ParamField path="y" type="float">
+  Y coordinate.
+</ParamField>
+
+<ParamField path="w" type="float">
+  Width.
+</ParamField>
+
+<ParamField path="h" type="float">
+  Height.
+</ParamField>
+
+<ParamField path="col" type="int">
+  Color.
+</ParamField>
+
+---
+
+### circ
+
+Draw a filled circle of the given radius and color at (x, y).
+
+<ParamField path="x" type="float">
+  Center X coordinate.
+</ParamField>
+
+<ParamField path="y" type="float">
+  Center Y coordinate.
+</ParamField>
+
+<ParamField path="r" type="float">
+  Radius.
+</ParamField>
+
+<ParamField path="col" type="int">
+  Color.
+</ParamField>
+
+---
+
+### circb
+
+Draw the outline of a circle of the given radius and color at (x, y).
+
+<ParamField path="x" type="float">
+  Center X coordinate.
+</ParamField>
+
+<ParamField path="y" type="float">
+  Center Y coordinate.
+</ParamField>
+
+<ParamField path="r" type="float">
+  Radius.
+</ParamField>
+
+<ParamField path="col" type="int">
+  Color.
+</ParamField>
+
+---
+
+### elli
+
+Draw a filled ellipse of width w, height h, and the specified color at (x, y).
+
+<ParamField path="x" type="float">
+  X coordinate.
+</ParamField>
+
+<ParamField path="y" type="float">
+  Y coordinate.
+</ParamField>
+
+<ParamField path="w" type="float">
+  Width.
+</ParamField>
+
+<ParamField path="h" type="float">
+  Height.
+</ParamField>
+
+<ParamField path="col" type="int">
+  Color.
+</ParamField>
+
+---
+
+### ellib
+
+Draw the outline of an ellipse of width w, height h, and the specified color at (x, y).
+
+<ParamField path="x" type="float">
+  X coordinate.
+</ParamField>
+
+<ParamField path="y" type="float">
+  Y coordinate.
+</ParamField>
+
+<ParamField path="w" type="float">
+  Width.
+</ParamField>
+
+<ParamField path="h" type="float">
+  Height.
+</ParamField>
+
+<ParamField path="col" type="int">
+  Color.
+</ParamField>
+
+---
+
+### tri
+
+Draw a filled triangle with the specified vertices and color.
+
+<ParamField path="x1" type="float">
+  Vertex 1 X.
+</ParamField>
+
+<ParamField path="y1" type="float">
+  Vertex 1 Y.
+</ParamField>
+
+<ParamField path="x2" type="float">
+  Vertex 2 X.
+</ParamField>
+
+<ParamField path="y2" type="float">
+  Vertex 2 Y.
+</ParamField>
+
+<ParamField path="x3" type="float">
+  Vertex 3 X.
+</ParamField>
+
+<ParamField path="y3" type="float">
+  Vertex 3 Y.
+</ParamField>
+
+<ParamField path="col" type="int">
+  Color.
+</ParamField>
+
+---
+
+### trib
+
+Draw the outline of a triangle with the specified vertices and color.
+
+<ParamField path="x1" type="float">
+  Vertex 1 X.
+</ParamField>
+
+<ParamField path="y1" type="float">
+  Vertex 1 Y.
+</ParamField>
+
+<ParamField path="x2" type="float">
+  Vertex 2 X.
+</ParamField>
+
+<ParamField path="y2" type="float">
+  Vertex 2 Y.
+</ParamField>
+
+<ParamField path="x3" type="float">
+  Vertex 3 X.
+</ParamField>
+
+<ParamField path="y3" type="float">
+  Vertex 3 Y.
+</ParamField>
+
+<ParamField path="col" type="int">
+  Color.
+</ParamField>
+
+---
+
+### fill
+
+Fill the area connected with the same color as (x, y) with the specified color.
+
+<ParamField path="x" type="float">
+  X coordinate.
+</ParamField>
+
+<ParamField path="y" type="float">
+  Y coordinate.
+</ParamField>
+
+<ParamField path="col" type="int">
+  Fill color.
+</ParamField>
+
+---
+
+### blt
+
+Copy the region of size (w, h) from (u, v) of image bank `img` to (x, y). Negative values for w or h flip the image horizontally or vertically. `colkey` sets the transparent color. `rotate` and `scale` apply transformations centered on the copy region.
+
+<ParamField path="x" type="float">
+  Destination X.
+</ParamField>
+
+<ParamField path="y" type="float">
+  Destination Y.
+</ParamField>
+
+<ParamField path="img" type="int/Image">
+  Image bank number (0-2) or Image instance.
+</ParamField>
+
+<ParamField path="u" type="float">
+  Source X in the image bank.
+</ParamField>
+
+<ParamField path="v" type="float">
+  Source Y in the image bank.
+</ParamField>
+
+<ParamField path="w" type="float">
+  Width. Use a negative value to flip horizontally.
+</ParamField>
+
+<ParamField path="h" type="float">
+  Height. Use a negative value to flip vertically.
+</ParamField>
+
+<ParamField path="colkey" type="int/None">
+  Transparent color. If omitted, no transparency.
+</ParamField>
+
+<ParamField path="rotate" type="float" default="0">
+  Rotation angle in degrees, centered on the copy region.
+</ParamField>
+
+<ParamField path="scale" type="float" default="1">
+  Scale factor, centered on the copy region.
+</ParamField>
+
+---
+
+### bltm
+
+Copy the region of size (w, h) from (u, v) of tilemap `tm` to (x, y). Each tile is 8×8 pixels stored as (image_tx, image_ty). Negative values for w or h flip the image. `colkey` sets the transparent color. `rotate` and `scale` apply transformations centered on the copy region.
+
+<ParamField path="x" type="float">
+  Destination X.
+</ParamField>
+
+<ParamField path="y" type="float">
+  Destination Y.
+</ParamField>
+
+<ParamField path="tm" type="int/Tilemap">
+  Tilemap number (0-7) or Tilemap instance.
+</ParamField>
+
+<ParamField path="u" type="float">
+  Source X in the tilemap.
+</ParamField>
+
+<ParamField path="v" type="float">
+  Source Y in the tilemap.
+</ParamField>
+
+<ParamField path="w" type="float">
+  Width. Use a negative value to flip horizontally.
+</ParamField>
+
+<ParamField path="h" type="float">
+  Height. Use a negative value to flip vertically.
+</ParamField>
+
+<ParamField path="colkey" type="int/None">
+  Transparent color. If omitted, no transparency.
+</ParamField>
+
+<ParamField path="rotate" type="float" default="0">
+  Rotation angle in degrees, centered on the copy region.
+</ParamField>
+
+<ParamField path="scale" type="float" default="1">
+  Scale factor, centered on the copy region.
+</ParamField>
+
+---
+
+### text
+
+Draw a string in the specified color at (x, y).
+
+<ParamField path="x" type="float">
+  X coordinate.
+</ParamField>
+
+<ParamField path="y" type="float">
+  Y coordinate.
+</ParamField>
+
+<ParamField path="s" type="str">
+  String to draw.
+</ParamField>
+
+<ParamField path="col" type="int">
+  Color.
+</ParamField>
+
+<ParamField path="font" type="Font">
+  Custom Font instance. If omitted, the standard font is used.
+</ParamField>
+
+---
+
+## Advanced drawing functions
+
+### blt3d
+
+Draw image bank `img` with perspective projection onto the screen rectangle (x, y, w, h).
+
+<ParamField path="x" type="float">
+  Destination X.
+</ParamField>
+
+<ParamField path="y" type="float">
+  Destination Y.
+</ParamField>
+
+<ParamField path="w" type="float">
+  Display width.
+</ParamField>
+
+<ParamField path="h" type="float">
+  Display height.
+</ParamField>
+
+<ParamField path="img" type="int/Image">
+  Image bank number (0-2) or Image instance.
+</ParamField>
+
+<ParamField path="pos" type="(float, float, float)">
+  Camera position (x, y, z). x and y match 2D coordinates; z is height.
+</ParamField>
+
+<ParamField path="rot" type="(float, float, float)">
+  Rotation in degrees. rot_x is vertical, rot_y is horizontal, rot_z is tilt.
+</ParamField>
+
+<ParamField path="fov" type="float" default="60">
+  Field of view in degrees.
+</ParamField>
+
+<ParamField path="colkey" type="int/None">
+  Transparent color. If omitted, no transparency.
+</ParamField>
+
+---
+
+### bltm3d
+
+Draw tilemap `tm` with perspective projection onto the screen rectangle (x, y, w, h).
+
+<ParamField path="x" type="float">
+  Destination X.
+</ParamField>
+
+<ParamField path="y" type="float">
+  Destination Y.
+</ParamField>
+
+<ParamField path="w" type="float">
+  Display width.
+</ParamField>
+
+<ParamField path="h" type="float">
+  Display height.
+</ParamField>
+
+<ParamField path="tm" type="int/Tilemap">
+  Tilemap number (0-7) or Tilemap instance.
+</ParamField>
+
+<ParamField path="pos" type="(float, float, float)">
+  Camera position (x, y, z). x and y match 2D coordinates; z is height.
+</ParamField>
+
+<ParamField path="rot" type="(float, float, float)">
+  Rotation in degrees. rot_x is vertical, rot_y is horizontal, rot_z is tilt.
+</ParamField>
+
+<ParamField path="fov" type="float" default="60">
+  Field of view in degrees.
+</ParamField>
+
+<ParamField path="colkey" type="int/None">
+  Transparent color. If omitted, no transparency.
+</ParamField>
+
+---
+
+## Color constants
+
+| Constant | Value | Hex |
+|---|---|---|
+| `COLOR_BLACK` | 0 | `#000000` |
+| `COLOR_NAVY` | 1 | `#2b335f` |
+| `COLOR_PURPLE` | 2 | `#7e2072` |
+| `COLOR_GREEN` | 3 | `#19959c` |
+| `COLOR_BROWN` | 4 | `#8b4852` |
+| `COLOR_DARK_BLUE` | 5 | `#395c98` |
+| `COLOR_LIGHT_BLUE` | 6 | `#a9c1ff` |
+| `COLOR_WHITE` | 7 | `#eeeeee` |
+| `COLOR_RED` | 8 | `#d4186c` |
+| `COLOR_ORANGE` | 9 | `#d38441` |
+| `COLOR_YELLOW` | 10 | `#e9c35b` |
+| `COLOR_LIME` | 11 | `#70c6a9` |
+| `COLOR_CYAN` | 12 | `#7696de` |
+| `COLOR_GRAY` | 13 | `#a3a3a3` |
+| `COLOR_PINK` | 14 | `#ff9798` |
+| `COLOR_PEACH` | 15 | `#edc7b0` |
+
+---
+
+## Resource constants
+
+| Constant | Value | Description |
+|---|---|---|
+| `NUM_COLORS` | 16 | Number of palette colors |
+| `NUM_IMAGES` | 3 | Number of image banks (0-2) |
+| `IMAGE_SIZE` | 256 | Image width and height |
+| `NUM_TILEMAPS` | 8 | Number of tilemaps (0-7) |
+| `TILEMAP_SIZE` | 256 | Tilemap width and height |
+| `TILE_SIZE` | 8 | Tile size in pixels |
+| `FONT_WIDTH` | 4 | Built-in font width |
+| `FONT_HEIGHT` | 6 | Built-in font height |

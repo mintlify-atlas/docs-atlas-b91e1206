@@ -1,0 +1,124 @@
+---
+title: "Installation"
+description: "Install Pyxel on Windows, Mac, or Linux with pip, or use it instantly in the browser with no setup required."
+---
+
+## Requirements
+
+- Python 3.8 or higher
+- pip (included with Python)
+
+<Tabs>
+  <Tab title="Windows / Mac / Linux">
+    <Steps>
+      <Step title="Install Python 3.8+">
+        Download and install Python from [python.org](https://www.python.org/).
+
+        <Warning>
+          On Windows, when running the Python installer, check **Add python.exe to PATH**. Without this, the `pyxel` command will not be available in your terminal.
+        </Warning>
+      </Step>
+      <Step title="Install Pyxel">
+        Run the following command in your terminal:
+
+        <CodeGroup>
+
+        ```bash pip
+        pip install -U pyxel
+        ```
+
+        ```bash pip3
+        pip3 install -U pyxel
+        ```
+
+        </CodeGroup>
+
+        The `-U` flag upgrades Pyxel to the latest version if it is already installed.
+      </Step>
+      <Step title="Verify the installation">
+        Run the `pyxel` command with no arguments to confirm it is installed and see the list of available subcommands:
+
+        ```bash
+        pyxel
+        ```
+
+        You should see output like:
+
+        ```
+        Pyxel, a retro game engine for Python
+        usage:
+            pyxel run PYTHON_SCRIPT_FILE(.py)
+            pyxel watch WATCH_DIR PYTHON_SCRIPT_FILE(.py)
+            pyxel play PYXEL_APP_FILE(.pyxapp)
+            pyxel edit [PYXEL_RESOURCE_FILE(.pyxres)]
+            pyxel package APP_DIR STARTUP_SCRIPT_FILE(.py)
+            pyxel app2exe PYXEL_APP_FILE(.pyxapp)
+            pyxel app2html PYXEL_APP_FILE(.pyxapp)
+            pyxel copy_examples
+        ```
+      </Step>
+      <Step title="Copy and run the examples">
+        Copy the built-in examples to your current directory:
+
+        ```bash
+        pyxel copy_examples
+        ```
+
+        Then run one to confirm everything is working:
+
+        ```bash
+        cd pyxel_examples
+        pyxel run 01_hello_pyxel.py
+        ```
+      </Step>
+    </Steps>
+  </Tab>
+  <Tab title="Web (no install)">
+    The web version of Pyxel runs directly in your browser — no Python installation required. It works on PCs, smartphones, and tablets.
+
+    **Pyxel Code Maker** is a browser-based development environment where you can write and run Pyxel apps without installing anything:
+
+    [Open Pyxel Code Maker](https://kitao.github.io/pyxel/web/code-maker/)
+
+    <Info>
+      For embedding Pyxel apps on your own website, see [How to Use Pyxel for Web](https://kitao.github.io/pyxel/web/web-usage/).
+    </Info>
+  </Tab>
+  <Tab title="VS Code extension">
+    The Pyxel VS Code extension lets you develop and run Pyxel apps without installing Python or Pyxel separately.
+
+    <Steps>
+      <Step title="Open VS Code">
+        Install [Visual Studio Code](https://code.visualstudio.com/) if you haven't already.
+      </Step>
+      <Step title="Install the Pyxel extension">
+        Open the **Extensions** view (`Ctrl+Shift+X`), search for **Pyxel**, and click **Install**.
+
+        Alternatively, install it directly from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=kitao.pyxel-vscode).
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+## Upgrading
+
+To upgrade an existing Pyxel installation to the latest version:
+
+```bash
+pip install -U pyxel
+```
+
+## Available `pyxel` commands
+
+Once installed, the `pyxel` CLI provides the following subcommands:
+
+| Command | Description |
+| --- | --- |
+| `pyxel run SCRIPT.py` | Run a Pyxel Python script |
+| `pyxel watch DIR SCRIPT.py` | Run and auto-reload on file changes |
+| `pyxel play APP.pyxapp` | Play a packaged Pyxel app |
+| `pyxel edit [RESOURCE.pyxres]` | Open the Pyxel Editor |
+| `pyxel package APP_DIR SCRIPT.py` | Package an app into a `.pyxapp` file |
+| `pyxel app2exe APP.pyxapp` | Convert a `.pyxapp` to an executable |
+| `pyxel app2html APP.pyxapp` | Convert a `.pyxapp` to an HTML file |
+| `pyxel copy_examples` | Copy built-in examples to the current directory |

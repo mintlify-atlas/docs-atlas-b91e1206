@@ -1,0 +1,309 @@
+---
+title: "Audio"
+description: "Play sounds and music, control channels, and generate BGM with Pyxel's audio API."
+---
+
+## Variables
+
+<ParamField path="sounds" type="list[Sound]">
+  List of sounds (instances of the `Sound` class), indexed 0–63.
+
+  ```python
+  pyxel.sounds[0].speed = 60
+  ```
+</ParamField>
+
+<ParamField path="musics" type="list[Music]">
+  List of music tracks (instances of the `Music` class), indexed 0–7.
+</ParamField>
+
+<Note>
+  The following variables are part of the advanced API for low-level audio control.
+
+  <ParamField path="tones" type="list[Tone]">
+    List of tone definitions (instances of the `Tone` class), indexed 0–3. Use these to define custom waveforms beyond the built-in triangle, square, pulse, and noise types.
+  </ParamField>
+
+  <ParamField path="channels" type="list[Channel]">
+    List of audio channels (instances of the `Channel` class), indexed 0–3. Use these for per-channel gain, detune, and playback control.
+  </ParamField>
+</Note>
+
+## Functions
+
+### play
+
+```python
+pyxel.play(ch, snd, sec=0, loop=False, resume=False)
+```
+
+Play sound `snd` on channel `ch`.
+
+<ParamField path="ch" type="int" required>
+  Channel number (0–3).
+</ParamField>
+
+<ParamField path="snd" type="int | list | Sound | str" required>
+  What to play. Accepts:
+  - A sound number (0–63)
+  - A list of sound numbers
+  - A `Sound` instance
+  - A list of `Sound` instances
+  - An MML string
+</ParamField>
+
+<ParamField path="sec" type="float" default="0">
+  Playback start position in seconds.
+</ParamField>
+
+<ParamField path="loop" type="bool" default="false">
+  Loop playback when it reaches the end.
+</ParamField>
+
+<ParamField path="resume" type="bool" default="false">
+  Resume the previously playing sound after `snd` finishes.
+</ParamField>
+
+```python
+# Play sound 2 on channel 0, looping
+pyxel.play(0, 2, loop=True)
+
+# Play an MML string directly on channel 1
+pyxel.play(1, "T120 O4 L8 CDEFGAB>C")
+
+# Play a sequence of sounds on channel 0
+pyxel.play(0, [0, 1, 2])
+```
+
+---
+
+### playm
+
+```python
+pyxel.playm(msc, sec=0, loop=False)
+```
+
+Play music track `msc`.
+
+<ParamField path="msc" type="int" required>
+  Music track number (0–7).
+</ParamField>
+
+<ParamField path="sec" type="float" default="0">
+  Playback start position in seconds.
+</ParamField>
+
+<ParamField path="loop" type="bool" default="false">
+  Loop the music track.
+</ParamField>
+
+```python
+pyxel.playm(0, loop=True)
+```
+
+---
+
+### stop
+
+```python
+pyxel.stop(ch)
+pyxel.stop()
+```
+
+Stop playback on channel `ch`. Call with no arguments to stop all channels.
+
+<ParamField path="ch" type="int">
+  Channel number (0–3). Omit to stop all channels.
+</ParamField>
+
+```python
+pyxel.stop(0)   # stop channel 0
+pyxel.stop()    # stop all channels
+```
+
+---
+
+### play_pos
+
+```python
+pyxel.play_pos(ch)
+```
+
+Get the current playback position of channel `ch`.
+
+<ParamField path="ch" type="int" required>
+  Channel number (0–3).
+</ParamField>
+
+<ResponseField name="returns" type="tuple[int, float] | None">
+  A tuple of `(sound_index, sec)` indicating which sound is playing and how many seconds in. Returns `None` when the channel is stopped.
+</ResponseField>
+
+```python
+pos = pyxel.play_pos(0)
+if pos is not None:
+    sound_index, elapsed_sec = pos
+```
+
+---
+
+### gen_bgm
+
+```python
+pyxel.gen_bgm(preset, transp, instr, seed, play=False)
+```
+
+Algorithmically generate a BGM as a list of MML strings.
+
+<ParamField path="preset" type="int" required>
+  Preset style (0–7):
+  - `0`–`1`: Title / departure (medium tempo)
+  - `2`–`3`: Town / peaceful (slow tempo)
+  - `4`–`5`: Field / adventure (medium tempo)
+  - `6`–`7`: Battle / crisis (fast tempo)
+</ParamField>
+
+<ParamField path="transp" type="int" required>
+  Transpose in semitones (−5 to +5).
+</ParamField>
+
+<ParamField path="instr" type="int" required>
+  Instrumentation (0–3):
+  - `0`: Melody + reverb + bass (3 channels)
+  - `1`: Melody + bass + drums (3 channels)
+  - `2`: Melody + sub + bass (3 channels)
+  - `3`: Melody + sub + bass + drums (4 channels)
+</ParamField>
+
+<ParamField path="seed" type="int" required>
+  Random seed. The same seed always produces the same BGM.
+</ParamField>
+
+<ParamField path="play" type="bool" default="false">
+  Immediately play the generated BGM.
+</ParamField>
+
+<ResponseField name="returns" type="list[str]">
+  A list of MML strings, one per channel used by the selected instrumentation.
+</ResponseField>
+
+```python
+# Generate a town-style BGM and play it immediately
+mml_list = pyxel.gen_bgm(2, 0, 1, 42, play=True)
+
+# Generate without playing, then assign to sounds manually
+mml_list = pyxel.gen_bgm(6, 2, 3, 99)
+for i, mml in enumerate(mml_list):
+    pyxel.sounds[i].mml(mml)
+```
+
+## Tone constants
+
+| Constant | Value | Wave type |
+| --- | --- | --- |
+| `TONE_TRIANGLE` | `0` | Triangle wave |
+| `TONE_SQUARE` | `1` | Square wave |
+| `TONE_PULSE` | `2` | Pulse wave |
+| `TONE_NOISE` | `3` | Noise |
+
+## Effect constants
+
+| Constant | Value | Description |
+| --- | --- | --- |
+| `EFFECT_NONE` | `0` | No effect |
+| `EFFECT_SLIDE` | `1` | Pitch slide |
+| `EFFECT_VIBRATO` | `2` | Vibrato |
+| `EFFECT_FADEOUT` | `3` | Fade out |
+| `EFFECT_HALF_FADEOUT` | `4` | Half fade out |
+| `EFFECT_QUARTER_FADEOUT` | `5` | Quarter fade out |
+
+## Resource constants
+
+| Constant | Value | Description |
+| --- | --- | --- |
+| `NUM_CHANNELS` | `4` | Number of audio channels (0–3) |
+| `NUM_TONES` | `4` | Number of tone types (0–3) |
+| `NUM_SOUNDS` | `64` | Number of sound slots (0–63) |
+| `NUM_MUSICS` | `8` | Number of music tracks (0–7) |
+
+## Channel class
+
+<Note>
+  `Channel` is an advanced API. Use the global `pyxel.channels[0–3]` list to access the built-in channels rather than constructing `Channel` instances directly.
+</Note>
+
+### Channel()
+
+```python
+channel = pyxel.Channel()
+```
+
+Create a new `Channel` instance.
+
+### Properties
+
+<ParamField path="Channel.gain" type="float" default="0.125">
+  Volume multiplier for the channel. Increase to make the channel louder, decrease to make it quieter.
+</ParamField>
+
+<ParamField path="Channel.detune" type="int" default="0">
+  Pitch adjustment in cents. Positive values raise pitch, negative values lower it.
+</ParamField>
+
+### Methods
+
+#### Channel.play
+
+```python
+channel.play(snd, sec=0, loop=False, resume=False)
+```
+
+Play sound `snd` on this channel. Accepts the same `snd` types as the global `pyxel.play()`.
+
+<ParamField path="snd" type="int | list | Sound | str" required>
+  Sound number (0–63), list of numbers, `Sound` instance, list of `Sound` instances, or MML string.
+</ParamField>
+
+<ParamField path="sec" type="float" default="0">
+  Playback start position in seconds.
+</ParamField>
+
+<ParamField path="loop" type="bool" default="false">
+  Loop playback.
+</ParamField>
+
+<ParamField path="resume" type="bool" default="false">
+  Resume the previously playing sound after `snd` finishes.
+</ParamField>
+
+---
+
+#### Channel.stop
+
+```python
+channel.stop()
+```
+
+Stop playback on this channel.
+
+---
+
+#### Channel.play_pos
+
+```python
+channel.play_pos()
+```
+
+<ResponseField name="returns" type="tuple[int, float] | None">
+  A tuple of `(sound_index, sec)` for the current playback position, or `None` when stopped.
+</ResponseField>
+
+```python
+ch = pyxel.channels[0]
+ch.gain = 0.25
+ch.play(0, loop=True)
+
+pos = ch.play_pos()
+if pos is not None:
+    sound_index, elapsed_sec = pos
+```

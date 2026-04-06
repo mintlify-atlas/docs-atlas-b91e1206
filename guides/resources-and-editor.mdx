@@ -1,0 +1,236 @@
+---
+title: "Resources and editor"
+description: "Manage Pyxel resource files, use the built-in editor to create images, tilemaps, sounds, and music, and create resources programmatically."
+---
+
+## The .pyxres resource file
+
+Pyxel stores all game assets—images, tilemaps, sounds, and music—in a single `.pyxres` binary file. Load it at startup with `pyxel.load()`:
+
+```python
+import pyxel
+
+class App:
+    def __init__(self):
+        pyxel.init(160, 120, title="My Game")
+        pyxel.load("assets/my_resource.pyxres")
+        pyxel.run(self.update, self.draw)
+```
+
+<Note>
+Call `pyxel.load()` after `pyxel.init()` but before `pyxel.run()`. The path is relative to the script's working directory.
+</Note>
+
+## Launching the editor
+
+<Steps>
+  <Step title="Open the editor">
+    Run the `pyxel edit` command from your terminal. Pass a `.pyxres` filename to load or create it:
+
+    ```bash
+    pyxel edit assets/my_resource.pyxres
+    ```
+
+    If the file does not exist it is created. If you omit the filename, `my_resource.pyxres` is used.
+  </Step>
+  <Step title="Switch between editor types">
+    Use the four buttons in the menu bar at the top of the screen to switch between the Image, Tilemap, Sound, and Music editors. You can also press `Alt+Left` / `Alt+Right`.
+  </Step>
+  <Step title="Save your work">
+    Press `Ctrl+S` (or `Cmd+S` on macOS) or click the Save button. All four resource types are saved together in the single `.pyxres` file.
+  </Step>
+  <Step title="Load the file in your app">
+    ```python
+    pyxel.load("assets/my_resource.pyxres")
+    ```
+  </Step>
+</Steps>
+
+<Tip>
+While the editor is open, drag and drop any `.pyxres` file onto the window to load it. This overwrites all current edits, so save first if needed.
+</Tip>
+
+## The four editors
+
+<CardGroup cols={2}>
+  <Card title="Image Editor" icon="image">
+    Create pixel art for sprites and tiles. Edit any of the 3 image banks (0–2), each 256×256 pixels.
+  </Card>
+  <Card title="Tilemap Editor" icon="table-cells">
+    Arrange 8×8 tiles from image banks into maps. Edit any of the 8 tilemaps (0–7), each 256×256 tiles.
+  </Card>
+  <Card title="Sound Editor" icon="music">
+    Compose sound effects and melodies. Edit any of the 64 sounds (0–63) using a piano roll.
+  </Card>
+  <Card title="Music Editor" icon="headphones">
+    Sequence sounds into music tracks. Edit any of the 8 music tracks (0–7) across 4 channels.
+  </Card>
+</CardGroup>
+
+## Image Editor
+
+The Image Editor lets you draw pixel art into one of three image banks. Each bank is a 256×256 canvas with the origin at the top-left.
+
+**Specifications:**
+- Image banks: 0–2 (3 banks total)
+- Size: 256×256 pixels each
+- Palette: 16 fixed colors
+
+**Drawing tools** (select with the toolbar or keyboard shortcut):
+
+| Shortcut | Tool |
+| --- | --- |
+| `S` | Select rectangular area |
+| `P` | Pencil (freehand; hold Shift for straight lines) |
+| `R` | Rectangle outline (hold Shift for square) |
+| `Shift+R` | Filled rectangle |
+| `C` | Ellipse outline (hold Shift for circle) |
+| `Shift+C` | Filled ellipse |
+| `B` | Bucket fill |
+
+Right-click on the canvas to pick the color under the cursor. Switch the active bank with the bank number buttons (0–2).
+
+**Loading external images:** Drag and drop a PNG, JPG, or GIF file onto the Image Editor. Colors are automatically mapped to the nearest palette entries, and anything outside the 256×256 boundary is clipped.
+
+## Tilemap Editor
+
+The Tilemap Editor arranges tiles from an image bank into scrollable maps.
+
+**Specifications:**
+- Tilemaps: 0–7 (8 maps total)
+- Size: 256×256 tiles each
+- Tile size: 8×8 pixels
+
+Each tilemap references one image bank. Select tiles from the tile image view on the right, then paint them onto the map canvas. Right-click on the canvas to pick the tile under the cursor.
+
+<Note>
+All tilemap cells default to tile position (0, 0). It is good practice to keep the top-left 8×8 region of your image bank empty so that unset tiles are invisible.
+</Note>
+
+**Placing multiple tiles:** Drag to select a rectangular region of tiles in the tile image view, then paint that selection as a repeating pattern on the map canvas.
+
+**Loading TMX files:** Drag and drop a `.tmx` file exported from [Tiled](https://www.mapeditor.org/) onto the Tilemap Editor to import layer 0 at the current editing area.
+
+## Sound Editor
+
+The Sound Editor uses a piano roll to create sound effects and melodies.
+
+**Specifications:**
+- Sounds: 0–63 (64 sounds total)
+- Pitch range: C0–B4
+- Max length: 48 notes
+- Polyphony: 1 note per sound
+
+**Per-note properties:**
+
+| Property | Options |
+| --- | --- |
+| Tone (TON) | `T` Triangle, `S` Square, `P` Pulse, `N` Noise |
+| Volume (VOL) | `0`–`7` (0 = silent, 7 = maximum) |
+| Effect (EFX) | `N` None, `S` Slide, `V` Vibrato, `F` FadeOut, `H` Half-FadeOut, `Q` Quarter-FadeOut |
+
+**Speed** sets the duration per note (1–99). 1 speed unit = 1/120 second. For example, speed 60 means each note lasts 0.5 seconds. Use low values (1–9) for sound effects and higher values (10+) for melodies.
+
+You can also input notes live from the PC keyboard—the QWE and ZXC rows map to two octaves. Press Enter to commit a note, and use the octave bar to select the starting octave.
+
+## Music Editor
+
+The Music Editor sequences sounds into music tracks across four independent channels.
+
+**Specifications:**
+- Music tracks: 0–7 (8 tracks total)
+- Channels: 4 (CH0–CH3)
+- Sounds per channel: up to 32
+
+Enter sound numbers (0–63) into the sequence editor for each channel. Channels play in parallel, so you can layer melodies, bass lines, and percussion simultaneously. Copy and paste between channels is supported.
+
+## Creating resources programmatically
+
+You can define or modify resources in code without using the editor.
+
+### Images
+
+Use `Image.set()` to define pixel art from a list of strings, where each character is a hex color index:
+
+```python
+# Draw a small sprite into image bank 0 at position (0, 0)
+pyxel.images[0].set(0, 0, [
+    "00011100",
+    "00111110",
+    "01111111",
+    "01101101",
+    "01111111",
+    "00111110",
+    "00011100",
+    "00000000",
+])
+```
+
+Use `Image.load()` to load a PNG, GIF, or JPEG directly into an image bank at a specific position:
+
+```python
+# Load an external image into bank 1 at position (0, 0)
+pyxel.images[1].load(0, 0, "sprite_sheet.png")
+```
+
+### Tilemaps
+
+Use `Tilemap.set()` to define tile layout from strings. Each value is a two-digit hex pair `(u, v)` referring to tile coordinates in the image bank:
+
+```python
+# Write a row of tiles into tilemap 0 at position (0, 0)
+pyxel.tilemaps[0].set(0, 0, [
+    "000102",
+    "101112",
+    "202122",
+])
+```
+
+### Sounds
+
+Use `Sound.set()` to define a sound by directly assigning note, tone, volume, and effect strings:
+
+```python
+snd = pyxel.sounds[0]
+snd.set("e2e2c2g2", "p", "7", "f", 24)
+```
+
+Use `Sound.set_notes()`, `Sound.set_tones()`, `Sound.set_volumes()`, and `Sound.set_effects()` to update individual properties:
+
+```python
+pyxel.sounds[1].set_notes("c3d3e3f3g3a3b3c4")
+pyxel.sounds[1].set_tones("ttttsspp")
+pyxel.sounds[1].set_volumes("77777777")
+pyxel.sounds[1].set_effects("nnnnnnnn")
+```
+
+Use `Sound.mml()` to define a sound using [MML (Music Macro Language)](https://kitao.github.io/pyxel/web/mml-studio/mml-commands.html) syntax:
+
+```python
+pyxel.sounds[2].mml("T120 L8 O4 CDEFGAB")
+```
+
+### Music
+
+Use `Music.set()` to assign lists of sound numbers to each of the four channels:
+
+```python
+pyxel.musics[0].set(
+    [0, 1, 2],   # CH0
+    [3, 4, 5],   # CH1
+    [6, 7],      # CH2
+    [],          # CH3 (silent)
+)
+```
+
+## Custom color palettes
+
+Pyxel supports `.pyxpal` palette files that let you override the default 16-color palette. Save the current palette to the desktop by pressing `Shift+Alt+0` while an app is running. Load a palette file with:
+
+```python
+pyxel.load("my_palette.pyxpal")
+```
+
+<Tip>
+Press `Shift+Alt+1`, `Shift+Alt+2`, or `Shift+Alt+3` while an app is running to export image banks 0, 1, or 2 to the desktop as PNG files for inspection.
+</Tip>

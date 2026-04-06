@@ -1,0 +1,146 @@
+---
+title: "MML Music"
+description: "Use Music Macro Language (MML) strings to define sounds and compose music in Pyxel — and generate algorithmic BGM with gen_bgm()."
+---
+
+MML (Music Macro Language) is a text-based notation for defining music. In Pyxel, you can pass MML strings directly to sounds or to the `play()` function, making it easy to write melodies inline without the Pyxel Editor.
+
+## Quick start
+
+Play a scale on channel 0:
+
+```python
+pyxel.play(0, "CDEFGAB>C")
+```
+
+Or store MML in a Sound slot and play it later:
+
+```python
+pyxel.sounds[0].mml("T120 O4 L8 CDEFGAB>C")
+pyxel.play(0, 0)
+```
+
+Call `mml()` with no arguments to exit MML mode and return to normal Sound mode:
+
+```python
+pyxel.sounds[0].mml()  # exit MML mode
+```
+
+## MML command reference
+
+| Command | Description |
+|---------|-------------|
+| `T <bpm>` | Tempo in BPM. Range: 1+. Default: 120. |
+| `Q <gate%>` | Gate time as a percentage (0–100). 100 = no gap; 0 = silent. Default: 80. |
+| `@ <tone>` | Tone: 0=Triangle, 1=Square, 2=Pulse, 3=Noise. Default: 0. |
+| `V <vol>` | Volume (0–127). Default: 100. |
+| `K <semitones>` | Transpose in semitones. 12 = up one octave. Default: 0. |
+| `Y <cents>` | Detune in cents. 100 = up a semitone. Default: 0. |
+| `O <oct>` | Set octave (-1–9). `O4`'s A = 440 Hz. Default: 4. |
+| `>` | Raise octave by 1 (max 9). |
+| `<` | Lower octave by 1 (min -1). |
+| `L <len>` | Default note/rest length. `L4`=quarter, `L8`=eighth, `L12`=quarter triplet. Default: 4. |
+| `C D E F G A B` | Play note. Append length: `F16` = sixteenth-note F. |
+| `R` | Rest. Append length: `R8` = eighth rest. |
+| `#` or `+` | Raise previous note by a semitone (sharp). |
+| `-` | Lower previous note by a semitone (flat). |
+| `.` | Dotted note — extends length by half. Repeatable. |
+| `&` | Tie/slur. Same pitch = tied; different pitch = legato. Can specify length: `C4&16`. |
+| `[` | Start repeat section. |
+| `] <count>` | End repeat. Repeats `count` times. Omit count to loop infinitely. Nesting supported. |
+
+### Envelope (`@ENV`)
+
+```
+@ENV <slot>                              # switch to envelope slot (0 = off)
+@ENV <slot> { init_vol, dur1, vol1, ... }  # define and switch to slot
+```
+
+Example: `@ENV1 { 30, 20, 100, 50, 0 }` — start at 30, reach 100 over 20 ticks, then fade to 0 over 50 ticks. 1 tick = 1/48 of a quarter note.
+
+### Vibrato (`@VIB`)
+
+```
+@VIB <slot>                                       # switch (0 = off)
+@VIB <slot> { delay_ticks, period_ticks, depth_cents }
+```
+
+Example: `@VIB1 {24, 12, 100}` — start vibrato after 24 ticks, 12-tick period, 100-cent depth.
+
+### Glide (`@GLI`)
+
+```
+@GLI <slot>                                # switch (0 = off)
+@GLI <slot> { offset_cents, dur_ticks }   # define pitch slide
+```
+
+Example: `@GLI1 { -100, 24 }` — slide up from 100 cents below over 24 ticks. Use `*` for automatic values.
+
+## Practical examples
+
+### Sound effect
+
+```python
+# Rising laser sound
+pyxel.sounds[0].mml("T180 @3 V80 O3 L32 [CDEFGAB>]2")
+pyxel.play(0, 0)
+```
+
+### Simple melody
+
+```python
+pyxel.sounds[1].mml("T120 @1 V100 O4 L8 C.D E4 F.G A4 >C4")
+pyxel.play(1, 1, loop=True)
+```
+
+### Multi-channel music with MML
+
+Pass MML strings directly to `play()` on different channels:
+
+```python
+def update():
+    if pyxel.frame_count == 0:
+        # Melody on ch 0
+        pyxel.play(0, "T120 @1 O5 L8 [CEGCEGCE]4", loop=True)
+        # Bass on ch 1
+        pyxel.play(1, "T120 @0 O3 L4 [C G F G]4", loop=True)
+```
+
+## Algorithmic BGM with `gen_bgm()`
+
+`pyxel.gen_bgm()` generates a complete multi-channel BGM as a list of MML strings using a built-in algorithm:
+
+```python
+mml_list = pyxel.gen_bgm(
+    preset=4,   # 4-5: field/adventure (medium tempo)
+    transp=0,   # no transpose
+    instr=1,    # melody + bass + drums (3 channels)
+    seed=42,    # random seed for reproducibility
+    play=True   # start playing immediately
+)
+```
+
+### Parameters
+
+| Parameter | Values | Description |
+|-----------|--------|-------------|
+| `preset` | 0–7 | Music style: 0–1 title/departure, 2–3 town/peaceful, 4–5 field/adventure, 6–7 battle/crisis |
+| `transp` | -5–+5 | Transpose in semitones |
+| `instr` | 0–3 | Instrumentation: 0=melody+reverb+bass (3ch), 1=melody+bass+drums (3ch), 2=melody+sub+bass (3ch), 3=melody+sub+bass+drums (4ch) |
+| `seed` | int | Random seed — same seed always produces the same result |
+| `play` | bool | If `True`, immediately plays the generated BGM |
+
+`gen_bgm()` returns a `list[str]` of MML strings (one per channel) so you can inspect or modify them.
+
+## MML vs Sound.set()
+
+| | MML | `Sound.set()` |
+|--|-----|---------------|
+| Syntax | Text string | Separate note/tone/volume/effect lists |
+| Features | Tempo, ties, slurs, envelopes, vibrato, glide | Basic note sequences |
+| Best for | Melodies, BGM, complex sounds | Simple sound effects |
+| Editor support | Pyxel MML Studio (browser) | Pyxel Editor (desktop) |
+
+<Tip>
+  Try composing MML interactively in [Pyxel MML Studio](https://kitao.github.io/pyxel/web/mml-studio/) — a browser-based tool with live playback.
+</Tip>

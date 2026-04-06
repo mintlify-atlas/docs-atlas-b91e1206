@@ -1,0 +1,169 @@
+---
+title: "Distributing apps"
+description: "Package Pyxel applications into .pyxapp files, convert them to standalone executables or HTML, and deploy to the web."
+---
+
+## Distribution formats
+
+Pyxel supports three distribution formats depending on your target audience:
+
+| Format | Command | Use case |
+| --- | --- | --- |
+| `.pyxapp` | `pyxel package` | Share with anyone who has Pyxel installed |
+| Executable | `pyxel app2exe` | Standalone desktop app, no Python needed |
+| HTML | `pyxel app2html` | Web deployment, runs in a browser |
+
+## Packaging a .pyxapp file
+
+<Steps>
+  <Step title="Organize your app directory">
+    Place your startup script, resource files, and any additional modules into a single directory:
+
+    ```
+    my_game/
+    ├── main.py
+    └── assets/
+        └── my_resource.pyxres
+    ```
+  </Step>
+  <Step title="Add metadata to your startup script">
+    Add metadata comments near the top of the startup script. Only `title` and `author` are required; the rest are optional:
+
+    ```python
+    # title: Pyxel Platformer
+    # author: Takashi Kitao
+    # desc: A Pyxel platformer example
+    # site: https://github.com/kitao/pyxel
+    # license: MIT
+    # version: 1.0
+
+    import pyxel
+
+    class App:
+        def __init__(self):
+            pyxel.init(128, 128, title="Pyxel Platformer")
+            pyxel.load("assets/platformer.pyxres")
+            pyxel.playm(0, loop=True)
+            pyxel.run(self.update, self.draw)
+
+        def update(self):
+            if pyxel.btn(pyxel.KEY_Q):
+                pyxel.quit()
+
+        def draw(self):
+            pyxel.cls(0)
+
+    App()
+    ```
+
+    The metadata is read by `pyxel play` and displayed at runtime.
+  </Step>
+  <Step title="Run the package command">
+    ```bash
+    pyxel package my_game main.py
+    ```
+
+    This creates `my_game.pyxapp` in the current directory. The first argument is the app directory; the second is the startup script relative to that directory.
+  </Step>
+  <Step title="Test the packaged app">
+    ```bash
+    pyxel play my_game.pyxapp
+    ```
+  </Step>
+</Steps>
+
+<Note>
+All files inside the app directory are bundled into the `.pyxapp` file. This includes subdirectories, additional Python modules, and any `.pyxres` resource files. Keep the directory clean to avoid bundling unwanted files.
+</Note>
+
+## Running .pyxapp files
+
+Anyone with Pyxel installed can run a `.pyxapp` file:
+
+```bash
+pyxel play my_game.pyxapp
+```
+
+You can also use the [Pyxel Web Launcher](https://kitao.github.io/pyxel/web/launcher/) to run `.pyxapp` files directly in a browser without installation.
+
+## Converting to a standalone executable
+
+`pyxel app2exe` bundles the app and a Python runtime into a single native executable. No Python or Pyxel installation is required on the target machine.
+
+```bash
+pyxel app2exe my_game.pyxapp
+```
+
+The output executable is placed in the current directory. The executable is platform-specific: build on Windows to distribute a Windows binary, build on macOS for macOS, and so on.
+
+<Warning>
+Cross-compilation is not supported. You must run `pyxel app2exe` on the same OS you are targeting.
+</Warning>
+
+## Converting to HTML
+
+`pyxel app2html` converts the app to a self-contained HTML file that runs in any modern browser via WebAssembly.
+
+```bash
+pyxel app2html my_game.pyxapp
+```
+
+The output is a single `.html` file. Host it on any static file server or embed it in a web page.
+
+### Embedding in a web page
+
+To embed the game on your own site, host the generated HTML file and use an `<iframe>`:
+
+```html
+<iframe
+  src="my_game.html"
+  width="512"
+  height="512"
+  style="border:none;">
+</iframe>
+```
+
+Adjust the `width` and `height` to match your game's resolution and desired display scale.
+
+<Tip>
+The [Pyxel Code Maker](https://kitao.github.io/pyxel/web/code-maker/) is a browser-based development environment you can use to build and test web-targeted Pyxel apps without any local installation.
+</Tip>
+
+## Bundling additional modules
+
+If your app depends on Python packages beyond the standard library, place them inside the app directory before packaging. Pyxel will bundle any `.py` files and packages it finds.
+
+```
+my_game/
+├── main.py
+├── my_utils.py          # additional module
+├── assets/
+│   └── my_resource.pyxres
+```
+
+For third-party packages, copy the package directory into your app directory:
+
+```
+my_game/
+├── main.py
+├── some_package/        # copied from site-packages
+│   ├── __init__.py
+│   └── ...
+└── assets/
+    └── my_resource.pyxres
+```
+
+## Cross-platform considerations
+
+| Target | Build platform | Notes |
+| --- | --- | --- |
+| Windows | Windows | Use `pyxel app2exe` on Windows |
+| macOS | macOS | Use `pyxel app2exe` on macOS |
+| Linux | Linux | Use `pyxel app2exe` on Linux |
+| Web (all platforms) | Any | Use `pyxel app2html`; output runs anywhere |
+
+`.pyxapp` files are cross-platform and can be run on any OS that has Pyxel installed. Executables and HTML files must be built for their target environment.
+
+<Note>
+The web version of Pyxel does not support `pyxel.flip()`. If your app uses manual frame control, switch to `pyxel.run()` before converting to HTML.
+</Note>

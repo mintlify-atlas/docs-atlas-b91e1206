@@ -1,0 +1,106 @@
+---
+title: "Font class"
+description: "Load BDF, OTF, TTF, or TTC font files and measure text width for custom typography in your Pyxel game."
+---
+
+<Note>
+`Font` is an Advanced API. For most games the built-in font (4×6 pixels) is sufficient. Use `Font` when you need a custom typeface or a larger point size.
+</Note>
+
+## Constructor
+
+### Font(filename, font_size=10)
+
+Create a `Font` instance from a font file.
+
+| Parameter | Type | Default | Description |
+| --- | --- | --- | --- |
+| `filename` | str | — | Path to the font file (BDF, OTF, TTF, or TTC) |
+| `font_size` | float | `10.0` | Point size. Not used for BDF files. |
+
+**Returns:** `Font`
+
+```python
+font = pyxel.Font("assets/my_font.ttf", 12)
+```
+
+<Tip>
+BDF (Bitmap Distribution Format) files are pixel-perfect bitmap fonts that are well-suited to retro games. The `font_size` parameter has no effect for BDF files because the glyph size is baked in.
+</Tip>
+
+## Methods
+
+### Font.text_width(s)
+
+Return the display width of string `s` in pixels for this font.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `s` | str | String to measure |
+
+**Returns:** `int` — Width in pixels
+
+Use this to center text, right-align scores, or avoid drawing outside the screen boundary:
+
+```python
+label = "GAME OVER"
+x = (pyxel.width - font.text_width(label)) // 2
+pyxel.text(x, 60, label, 7, font)
+```
+
+## Using a Font with pyxel.text()
+
+Pass a `Font` instance as the optional `font` parameter to `pyxel.text()` or `Image.text()`. When omitted, Pyxel uses its built-in 4×6 font.
+
+```python
+pyxel.text(x, y, s, col, font=None)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `x` | float | X coordinate |
+| `y` | float | Y coordinate |
+| `s` | str | String to draw |
+| `col` | int | Color index (0–15) |
+| `font` | Font | Custom `Font` instance. Omit to use the built-in font. |
+
+## Example
+
+```python
+import pyxel
+
+class App:
+    def __init__(self):
+        pyxel.init(160, 120, title="Custom Font Demo")
+
+        # Load a TrueType font at 12pt
+        self.font = pyxel.Font("assets/my_font.ttf", 12)
+
+        self.score = 0
+        pyxel.run(self.update, self.draw)
+
+    def update(self):
+        if pyxel.btnp(pyxel.KEY_Q):
+            pyxel.quit()
+        self.score += 1
+
+    def draw(self):
+        pyxel.cls(0)
+
+        # Draw a title with the custom font
+        pyxel.text(10, 10, "Hello!", 7, self.font)
+
+        # Center the score label using text_width
+        score_str = f"Score: {self.score}"
+        x = (pyxel.width - self.font.text_width(score_str)) // 2
+        pyxel.text(x, 50, score_str, 10, self.font)
+
+        # Built-in font (no font argument)
+        pyxel.text(10, 100, "Built-in font", 13)
+
+App()
+```
+
+<Tip>
+Keep font files inside your project's asset directory and reference them with a relative path so the game works when distributed with `pyxel package`.
+</Tip>

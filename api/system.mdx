@@ -1,0 +1,180 @@
+---
+title: "System"
+description: "Core lifecycle functions and variables for initializing and controlling the Pyxel application."
+---
+
+## Variables
+
+<ResponseField name="width" type="int">
+  The width of the screen.
+</ResponseField>
+
+<ResponseField name="height" type="int">
+  The height of the screen.
+</ResponseField>
+
+<ResponseField name="frame_count" type="int">
+  The number of elapsed frames.
+</ResponseField>
+
+## Functions
+
+### `init`
+
+Initialize the Pyxel application with the screen size `(width, height)`.
+
+<ParamField path="width" type="number" required>
+  Screen width.
+</ParamField>
+
+<ParamField path="height" type="number" required>
+  Screen height.
+</ParamField>
+
+<ParamField path="title" type="string" default="Pyxel">
+  Window title.
+</ParamField>
+
+<ParamField path="fps" type="number" default="30">
+  Frame rate.
+</ParamField>
+
+<ParamField path="quit_key" type="number" default="KEY_ESCAPE">
+  Key to quit the application.
+</ParamField>
+
+<ParamField path="display_scale" type="number">
+  Display scale factor. If omitted, automatically determined.
+</ParamField>
+
+<ParamField path="capture_scale" type="number" default="2">
+  Screen capture scale factor.
+</ParamField>
+
+<ParamField path="capture_sec" type="number" default="10">
+  Maximum recording time for screen capture video in seconds.
+</ParamField>
+
+<ParamField path="headless" type="boolean" default="false">
+  Run without a window.
+</ParamField>
+
+```python
+pyxel.init(160, 120, title="My Pyxel App", fps=60, quit_key=pyxel.KEY_NONE, capture_scale=3, capture_sec=0)
+```
+
+---
+
+### `run`
+
+Start the Pyxel application and call `update` for frame updates and `draw` for rendering.
+
+<ParamField path="update" type="callable" required>
+  Function to update game logic each frame.
+</ParamField>
+
+<ParamField path="draw" type="callable" required>
+  Function to draw the screen each frame.
+</ParamField>
+
+---
+
+### `show`
+
+Show the screen and wait until the quit key is pressed.
+
+---
+
+### `flip`
+
+Refresh the screen by one frame. The application exits when the quit key is pressed.
+
+<Warning>
+  This function is not available in the web version.
+</Warning>
+
+---
+
+### `quit`
+
+Quit the Pyxel application.
+
+---
+
+### `reset`
+
+Restart the Pyxel application from the beginning.
+
+---
+
+## Advanced functions
+
+<Note>
+  The following functions provide lower-level control over window appearance and performance. Use them only when the standard API is insufficient.
+</Note>
+
+### `title` <sup>Advanced</sup>
+
+Set the window title.
+
+<ParamField path="title" type="string" required>
+  Window title.
+</ParamField>
+
+---
+
+### `icon` <sup>Advanced</sup>
+
+Set the application icon. Specify the icon image as a list of strings.
+
+<ParamField path="data" type="string[]" required>
+  Icon image as a list of strings.
+</ParamField>
+
+<ParamField path="scale" type="number" required>
+  Scale factor.
+</ParamField>
+
+<ParamField path="colkey" type="number">
+  Transparent color. If omitted, no transparency.
+</ParamField>
+
+---
+
+### `fullscreen` <sup>Advanced</sup>
+
+Set whether to run in fullscreen mode.
+
+<ParamField path="enabled" type="boolean" required>
+  Enable fullscreen.
+</ParamField>
+
+---
+
+### `screen_mode` <sup>Advanced</sup>
+
+Set the screen rendering mode.
+
+<ParamField path="scr" type="number" required>
+  Screen mode number: `0` for crisp, `1` for smooth, `2` for retro.
+</ParamField>
+
+---
+
+### `perf_monitor` <sup>Advanced</sup>
+
+Show or hide the performance monitor overlay.
+
+<ParamField path="enabled" type="boolean" required>
+  Enable the performance monitor.
+</ParamField>
+
+---
+
+### `integer_scale` <sup>Advanced</sup>
+
+Enable or disable integer scaling for the display.
+
+<ParamField path="enabled" type="boolean" required>
+  Enable integer scaling.
+</ParamField>

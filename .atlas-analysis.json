@@ -1,0 +1,127 @@
+{
+  "projectType": "sdk-library",
+  "projectName": "Pyxel",
+  "projectDescription": "A retro game engine for Python that lets you create pixel-art games with simple, PICO-8-inspired specifications including a 16-color palette, 4 audio channels, and built-in editors.",
+  "theme": "almond",
+  "primaryColor": "#242b2c",
+  "lightColor": "#6a6a6d",
+  "darkColor": "#ebeaea",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Guide",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "installation",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Building Games",
+            "pages": [
+              "guides/creating-applications",
+              "guides/resources-and-editor",
+              "guides/distributing-apps"
+            ]
+          },
+          {
+            "group": "Platform & Tools",
+            "pages": [
+              "guides/web-usage",
+              "guides/cli-reference",
+              "guides/mml-music"
+            ]
+          },
+          {
+            "group": "Help",
+            "pages": [
+              "faq",
+              "changelog"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Core",
+            "pages": [
+              "api/system",
+              "api/resource",
+              "api/input"
+            ]
+          },
+          {
+            "group": "Graphics",
+            "pages": [
+              "api/graphics",
+              "api/image-class",
+              "api/tilemap-class"
+            ]
+          },
+          {
+            "group": "Audio",
+            "pages": [
+              "api/audio",
+              "api/sound-class",
+              "api/music-class"
+            ]
+          },
+          {
+            "group": "Utilities",
+            "pages": [
+              "api/math",
+              "api/font-class",
+              "api/constants"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "16-color palette with retro game aesthetics inspired by PICO-8 and TIC-80",
+    "Built-in Pyxel Editor for creating pixel art images, tilemaps, sounds, and music",
+    "Cross-platform support: Windows, Mac, Linux, and Web (WebAssembly)",
+    "4-channel audio with programmable sounds, music tracks, and MML support",
+    "CLI tools for running, packaging, and converting apps to HTML/executable",
+    "Keyboard, mouse, and gamepad input handling",
+    "Image banks (3x 256x256), tilemaps (8x 256x256), and 64 definable sounds",
+    "Perlin noise, math utilities, and collision detection built-in",
+    "No-install web usage via Pyxel Code Maker and Web Launcher"
+  ],
+  "publicApiSurface": [
+    "pyxel.init(width, height, ...)",
+    "pyxel.run(update, draw)",
+    "pyxel.show()",
+    "pyxel.quit()",
+    "pyxel.load(filename)",
+    "pyxel.btn(key) / btnp(key) / btnr(key)",
+    "pyxel.cls(col)",
+    "pyxel.pset(x, y, col) / pget(x, y)",
+    "pyxel.line(x1, y1, x2, y2, col)",
+    "pyxel.rect(x, y, w, h, col) / rectb(...)",
+    "pyxel.circ(x, y, r, col) / circb(...)",
+    "pyxel.blt(x, y, img, u, v, w, h, ...)",
+    "pyxel.bltm(x, y, tm, u, v, w, h, ...)",
+    "pyxel.text(x, y, s, col)",
+    "pyxel.play(ch, snd, ...) / playm(msc, ...)",
+    "pyxel.stop(ch)",
+    "pyxel.images[0..2] — Image banks",
+    "pyxel.tilemaps[0..7] — Tilemap banks",
+    "pyxel.sounds[0..63] — Sound slots",
+    "pyxel.musics[0..7] — Music tracks",
+    "pyxel.colors — 16-color palette",
+    "Image.set() / Image.load()",
+    "Tilemap.set() / Tilemap.collide()",
+    "Sound.set() / Sound.mml() / Sound.pcm()",
+    "Music.set()",
+    "pyxel.noise(x, y, z) / nseed(seed)",
+    "pyxel.rndi(a, b) / rndf(a, b)",
+    "pyxel.gen_bgm(preset, transp, instr, seed)"
+  ]
+}

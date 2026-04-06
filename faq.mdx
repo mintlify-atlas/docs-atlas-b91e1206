@@ -1,0 +1,148 @@
+---
+title: "FAQ"
+description: "Frequently asked questions about Pyxel, the retro game engine for Python."
+---
+
+## Learning Pyxel
+
+<AccordionGroup>
+  <Accordion title="Where do I start to learn Pyxel?">
+    It is recommended to try Pyxel's example code in the following order:
+
+    1. `01_hello_pyxel` — Pyxel basics
+    2. `05_color_palette` — Color palette
+    3. `03_draw_api` — Drawing API
+    4. `04_sound_api` — Sound API
+    5. `02_jump_game` — Game implementation
+
+    You can copy the examples locally with:
+
+    ```bash
+    pyxel copy_examples
+    ```
+
+    Or run them directly in your browser on [Pyxel Showcase](https://kitao.github.io/pyxel/web/showcase/).
+  </Accordion>
+
+  <Accordion title="Are there any books on Pyxel?">
+    An official [book](https://gihyo.jp/book/2025/978-4-297-14657-3) is available, currently in Japanese only.
+  </Accordion>
+</AccordionGroup>
+
+## API & Usage
+
+<AccordionGroup>
+  <Accordion title="What is the difference between the update and draw functions?">
+    The `update` function is called every frame, but the `draw` function may be skipped if the processing time exceeds the allowable limit.
+
+    This design reduces the impact of rendering load and OS interruptions, enabling smooth animation. Game logic in `update` always runs on schedule, while rendering in `draw` is dropped when the system is under load rather than causing the game to slow down.
+  </Accordion>
+
+  <Accordion title="How do I use Pyxel's MML?">
+    MML (Music Macro Language) is a language for defining sounds by describing notes, tempo, and other parameters as a string.
+
+    **Setting MML on a Sound:**
+
+    Pass an MML string to the `mml` function of the `Sound` class. Call `mml()` with no arguments to clear the setting.
+
+    ```python
+    pyxel.sounds[0].mml("CDEFGAB>C")
+    ```
+
+    **Playing MML directly:**
+
+    You can also pass an MML string directly to the `play` function instead of a sound number:
+
+    ```python
+    pyxel.play(0, "CDEFG")
+    ```
+
+    For all available MML commands, see the [Pyxel MML Commands reference](https://kitao.github.io/pyxel/web/mml-studio/mml-commands.html). For a real usage example, see the [09_shooter demo](https://kitao.github.io/pyxel/web/showcase/examples/09-shooter.html) and its [source code](https://github.com/kitao/pyxel/blob/main/python/pyxel/examples/09_shooter.py).
+
+    You can also compose and share MML in your browser using [Pyxel MML Studio](https://kitao.github.io/pyxel/web/mml-studio/).
+  </Accordion>
+
+  <Accordion title="File cannot be loaded. It may fail when the environment changes.">
+    Make sure that the current directory is set as intended when loading files.
+
+    When Pyxel's `init` function is called, the current directory is automatically changed to the same location as the script file. After that, files can be specified using relative paths. Loading may fail if you:
+
+    - Try to open a file **before** calling `init`
+    - Change the current directory **after** calling `init`
+
+    Keep all file loading after `init` and use paths relative to your script file.
+  </Accordion>
+
+  <Accordion title="How can I save application-specific data like high scores or game progress?">
+    Use the `user_data_dir` function to get a platform-appropriate directory for your app's persistent data:
+
+    ```python
+    data_dir = pyxel.user_data_dir("MyStudio", "MyGame")
+    ```
+
+    Pass your developer name (`vendor_name`) and application name (`app_name`). The function returns a path to a directory suitable for data storage on the current platform (follows OS conventions for Windows, macOS, and Linux). Use this directory to save and load your application's files.
+  </Accordion>
+</AccordionGroup>
+
+## Using Pyxel Tools
+
+<AccordionGroup>
+  <Accordion title="Can I try Pyxel without installing it?">
+    Yes. [Pyxel Code Maker](https://kitao.github.io/pyxel/web/code-maker/) lets you create and run Pyxel apps entirely in your browser with no installation required.
+
+    <Note>
+      Pyxel Code Maker does not support multi-file projects. A local installation is recommended for full-scale development.
+    </Note>
+
+    [Pyxel Showcase](https://kitao.github.io/pyxel/web/showcase/) lets you browse and run sample code and community apps in your browser as well.
+  </Accordion>
+
+  <Accordion title="How do I publish my Pyxel app on the web?">
+    There are three methods for publishing a Pyxel app to the web:
+
+    - **Web Launcher** — Host your `.py` or `.pyxapp` file and link to it via the Pyxel Web Launcher URL
+    - **app2html** — Package your app as a self-contained HTML file using the `pyxel app2html` command
+    - **Custom Tags** — Embed Pyxel directly into an existing HTML page using custom script tags
+
+    For full details and examples of each method, see the [How to Use Pyxel for Web](https://kitao.github.io/pyxel/web/web-usage/) guide.
+  </Accordion>
+
+  <Accordion title="Can I change the palette colors in Pyxel Editor?">
+    Yes. Place a file with the same name as your Pyxel resource file (`.pyxres`) but with a `.pyxpal` extension in the same directory. Pyxel Editor will automatically pick it up and update the palette display colors.
+
+    Palette files can be created in two ways:
+
+    - Using the `save_pal` function from your code
+    - Manually, as a plain text file with one hex color code per line (e.g. `ff004d`)
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="How do I migrate code to version 2.4?">
+    Pyxel 2.4 revamped the sound engine and MML syntax. Make the following changes to update your code:
+
+    - Rename the `waveform` field of the `Tone` class to `wavetable`
+    - Change the `tick` argument of the `play` and `playm` functions to `sec` (a float value in seconds)
+    - Update code to handle the return value of `play_pos`, which is now `(sound_no, sec)`
+    - Change the `count` argument of the `save` function in `Sound` and `Music` classes to `sec`
+    - To get a sound's playback duration, use the `total_sec` function of the `Sound` class
+    - Update `Sound.mml()` calls to use the new MML syntax
+    - To keep using the old MML syntax temporarily, use `Sound.old_mml()` instead
+    - Rename `excl_*` options in `save` and `load` functions to `exclude_*`
+    - Remove `incl_*` options from `save` and `load` function calls
+
+    For details on the new MML syntax, see "How do I use Pyxel's MML?" above.
+  </Accordion>
+</AccordionGroup>
+
+## Licensing & Sponsorship
+
+<AccordionGroup>
+  <Accordion title="Can I use Pyxel for commercial purposes without the author's permission?">
+    Yes. Pyxel is released under the [MIT License](https://github.com/kitao/pyxel/blob/main/LICENSE). As long as you comply with the MIT License and clearly display the full copyright and license text in your source code or license file, you are free to sell or distribute your work without the author's explicit permission.
+
+    However, since Pyxel is developed and maintained by a single individual, it would be greatly appreciated if you could reach out to the author or consider [sponsoring the project](https://github.com/sponsors/kitao) if your use is commercial.
+  </Accordion>
+</AccordionGroup>

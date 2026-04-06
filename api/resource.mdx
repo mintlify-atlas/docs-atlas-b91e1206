@@ -1,0 +1,142 @@
+---
+title: "Resource"
+description: "Functions for loading and saving Pyxel resource files, palette files, screenshots, and screen recordings."
+---
+
+## Functions
+
+### `load`
+
+Load a resource file (`.pyxres`). If an option is set to `True`, the corresponding resource will be excluded from loading.
+
+<ParamField path="filename" type="string" required>
+  Resource file name.
+</ParamField>
+
+<ParamField path="exclude_images" type="boolean" default="false">
+  Exclude image banks from loading.
+</ParamField>
+
+<ParamField path="exclude_tilemaps" type="boolean" default="false">
+  Exclude tilemaps from loading.
+</ParamField>
+
+<ParamField path="exclude_sounds" type="boolean" default="false">
+  Exclude sounds from loading.
+</ParamField>
+
+<ParamField path="exclude_musics" type="boolean" default="false">
+  Exclude music tracks from loading.
+</ParamField>
+
+<Note>
+  If a palette file (`.pyxpal`) with the same name exists alongside the resource file, the palette display colors will also be updated.
+</Note>
+
+---
+
+## Advanced functions
+
+<Note>
+  The following functions provide additional control over resource persistence, screen capture, and palette management.
+</Note>
+
+### `user_data_dir` <sup>Advanced</sup>
+
+Return the user data directory created from `vendor_name` and `app_name`. If the directory does not exist, it is created automatically.
+
+<ParamField path="vendor_name" type="string" required>
+  Vendor name.
+</ParamField>
+
+<ParamField path="app_name" type="string" required>
+  Application name.
+</ParamField>
+
+<ResponseField name="returns" type="string">
+  Path to the user data directory.
+</ResponseField>
+
+```python
+pyxel.user_data_dir("Takashi Kitao", "Pyxel Shooter")
+```
+
+---
+
+### `save` <sup>Advanced</sup>
+
+Save the resource file (`.pyxres`). If an option is set to `True`, the corresponding resource will be excluded from saving.
+
+<ParamField path="filename" type="string" required>
+  Resource file name.
+</ParamField>
+
+<ParamField path="exclude_images" type="boolean" default="false">
+  Exclude image banks from saving.
+</ParamField>
+
+<ParamField path="exclude_tilemaps" type="boolean" default="false">
+  Exclude tilemaps from saving.
+</ParamField>
+
+<ParamField path="exclude_sounds" type="boolean" default="false">
+  Exclude sounds from saving.
+</ParamField>
+
+<ParamField path="exclude_musics" type="boolean" default="false">
+  Exclude music tracks from saving.
+</ParamField>
+
+---
+
+### `screenshot` <sup>Advanced</sup>
+
+Take a screenshot.
+
+<ParamField path="filename" type="string">
+  Output file name. If omitted, saved to the desktop.
+</ParamField>
+
+<ParamField path="scale" type="number">
+  Scale factor. Defaults to `capture_scale` set in `init`.
+</ParamField>
+
+---
+
+### `screencast` <sup>Advanced</sup>
+
+Save the screen recording as a GIF file.
+
+<ParamField path="filename" type="string">
+  Output file name. If omitted, saved to the desktop.
+</ParamField>
+
+<ParamField path="scale" type="number">
+  Scale factor. Defaults to `capture_scale` set in `init`.
+</ParamField>
+
+---
+
+### `reset_screencast` <sup>Advanced</sup>
+
+Reset the screen recording buffer.
+
+---
+
+### `load_pal` <sup>Advanced</sup>
+
+Load a palette file (`.pyxpal`).
+
+<ParamField path="filename" type="string" required>
+  Palette file name.
+</ParamField>
+
+---
+
+### `save_pal` <sup>Advanced</sup>
+
+Save a palette file (`.pyxpal`).
+
+<ParamField path="filename" type="string" required>
+  Palette file name.
+</ParamField>

@@ -1,0 +1,98 @@
+---
+title: "Introduction"
+description: "Pyxel is an open-source retro game engine for Python, inspired by PICO-8 and TIC-80."
+---
+
+**Pyxel** (/ˈpɪksəl/) is a retro game engine for Python. With simple specifications inspired by retro gaming consoles — displaying only 16 colors and supporting 4 sound channels — you can easily enjoy making pixel-art-style games.
+
+Pyxel is open source under the [MIT License](https://github.com/kitao/pyxel/blob/main/LICENSE) and free to use, including in commercial projects.
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Build your first Pyxel game in minutes with working code examples.
+  </Card>
+  <Card title="Installation" icon="download" href="/installation">
+    Install Pyxel with pip, or use it instantly in the browser.
+  </Card>
+  <Card title="API Reference" icon="code" href="/api/system">
+    Browse the full Python API: system, graphics, audio, and input.
+  </Card>
+  <Card title="Pyxel Editor" icon="paintbrush" href="/guides/resources-and-editor">
+    Create sprites, tilemaps, sounds, and music with the built-in editor.
+  </Card>
+</CardGroup>
+
+## Specifications
+
+Pyxel's constrained design is intentional — the limits focus your creativity and keep the API learnable in a single sitting.
+
+| Specification | Value |
+| --- | --- |
+| Platforms | Windows, Mac, Linux, Web |
+| Language | Python 3.8+ |
+| Screen size | Customizable |
+| Colors | 16 (fixed palette, swappable at runtime) |
+| Image banks | 3 × 256×256 pixels |
+| Tilemaps | 8 × 256×256 tiles |
+| Audio channels | 4 |
+| Sounds | 64 definable sounds |
+| Music tracks | 8 (composed from sounds) |
+| Input | Keyboard, mouse, gamepad |
+| License | MIT |
+
+<Info>
+  Pyxel's specifications and APIs are inspired by [PICO-8](https://www.lexaloffle.com/pico-8.php) and [TIC-80](https://tic80.com/). If you've used either of those, you'll feel at home immediately.
+</Info>
+
+## 16-color palette
+
+Pyxel uses a fixed 16-color palette. Each color has a named constant you can use directly in your code (e.g., `pyxel.COLOR_RED`).
+
+| Index | Constant | Hex |
+|-------|----------|-----|
+| 0 | `COLOR_BLACK` | `#000000` |
+| 1 | `COLOR_NAVY` | `#2b335f` |
+| 2 | `COLOR_PURPLE` | `#7e2072` |
+| 3 | `COLOR_GREEN` | `#19959c` |
+| 4 | `COLOR_BROWN` | `#8b4852` |
+| 5 | `COLOR_DARK_BLUE` | `#395c98` |
+| 6 | `COLOR_LIGHT_BLUE` | `#a9c1ff` |
+| 7 | `COLOR_WHITE` | `#eeeeee` |
+| 8 | `COLOR_RED` | `#d4186c` |
+| 9 | `COLOR_ORANGE` | `#d38441` |
+| 10 | `COLOR_YELLOW` | `#e9c35b` |
+| 11 | `COLOR_LIME` | `#70c6a9` |
+| 12 | `COLOR_CYAN` | `#7696de` |
+| 13 | `COLOR_GRAY` | `#a3a3a3` |
+| 14 | `COLOR_PINK` | `#ff9798` |
+| 15 | `COLOR_PEACH` | `#edc7b0` |
+
+Reference colors in code using their index or named constant:
+
+```python
+pyxel.text(10, 10, "Hello!", pyxel.COLOR_WHITE)   # named constant
+pyxel.rect(10, 10, 20, 20, 11)                     # index — LIME
+```
+
+<Tip>
+  The palette is customizable at runtime via `pyxel.colors`. You can swap any of the 16 slots to any RGB value without changing your drawing calls.
+</Tip>
+
+## Platforms
+
+Pyxel runs on all major platforms with no platform-specific code required.
+
+<CardGroup cols={2}>
+  <Card title="Windows, Mac, Linux" icon="desktop">
+    Install via pip and run your scripts with the `pyxel run` command or directly with `python`.
+  </Card>
+  <Card title="Web" icon="globe">
+    Run Pyxel apps in any modern browser — no installation needed. Use [Pyxel Code Maker](https://kitao.github.io/pyxel/web/code-maker/) to develop entirely in the browser.
+  </Card>
+</CardGroup>
+
+## Open source
+
+Pyxel is licensed under the [MIT License](https://github.com/kitao/pyxel/blob/main/LICENSE). You can use it freely in personal, educational, and commercial projects. All copies must include the license text.
+
+Source code is available at [github.com/kitao/pyxel](https://github.com/kitao/pyxel). Contributions, bug reports, and pull requests are welcome.

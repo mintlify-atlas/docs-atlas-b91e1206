@@ -1,0 +1,240 @@
+---
+title: "Changelog"
+description: "Release history and version notes for the Pyxel retro game engine."
+---
+
+## 2.9.0
+
+- Made `transp`, `instr`, and `seed` arguments of `gen_bgm` required
+- Added `Cargo.lock` to version control for reproducible builds
+
+---
+
+## 2.8.10
+
+- Fixed WASM public API functions lost by a const refactor
+
+---
+
+## 2.8.9
+
+- Refined code quality and consistency across all layers
+- Removed unnecessary allocations in rendering and audio paths
+- Unified editor undo/redo and input handling patterns
+- Optimized drawing hot paths and audio command processing
+- Fixed memory leak in MML playback on channels
+- Fixed tilemap editor selection and viewer rendering bugs
+- Added comprehensive Python API and Rust unit tests
+- Removed undefined constants from type stubs and API reference
+- Improved headless mode with frame pipeline and input injection
+
+---
+
+## 2.8.8
+
+- Fixed MML audio engine edge cases
+- Fixed editor input and copy/paste issues
+- Fixed memory leaks in temporary image, tilemap, and sound objects
+- Fixed doc generator stripping HTML tags inside inline code
+- Fixed mouse coordinate handling on startup
+
+<Warning>
+  Tilemap tile coordinate type changed from `u8` to `u16`. Code that stores or compares raw tile coordinates with a `u8` type will need to be updated.
+</Warning>
+
+---
+
+## 2.8.7
+
+- Fixed headless mode to run the same frame loop as normal mode
+- Added SIGINT handling to allow Ctrl+C during the event loop
+
+---
+
+## 2.8.5
+
+- Optimized `blt` and `bltm` rendering with fast paths
+- Optimized tilemap, text, and perspective rendering
+- Increased maximum color palette size from **255 to 256**
+- Optimized GIF screencast saving with buffer reuse
+- Enabled Python `atexit` handlers on program termination
+- Enabled audio playback in headless mode
+- Fixed WASM keyboard keys sticking on rapid input
+
+---
+
+## 2.8.4
+
+- Moved web pages from `wasm/` to `web/` with redirect support
+- Added web usage guide page with multilingual support
+- Fixed arrow keys not working in Safari on the web version
+- Added resource file format documentation
+
+---
+
+## 2.8.3
+
+- Added URL loading support to Code Maker
+- Added multilingual editor manual with 12-language support
+- Added docstrings to type stubs from the API reference
+
+---
+
+## 2.8.0
+
+- Added project sharing via Gist, GitHub, and URL in Code Maker
+- Added drag-and-drop support for `.py` and `.pyxres` files in Code Maker
+
+<Warning>
+  Web Launcher URL format changed from dot separators to slash separators. Existing Web Launcher links will need to be updated.
+</Warning>
+
+---
+
+## 2.7.8
+
+- Added `blt3d` and `bltm3d` functions for pseudo-3D perspective rendering
+- Added Example 19 demonstrating perspective rendering
+
+---
+
+## 2.7.3
+
+- Improved error handling and unified error messages
+- Added VS Code extension for Pyxel
+- Added MCP server for AI-assisted development
+- Added KMSDRM video driver for embedded Linux devices
+- Expanded Rust unit tests across 10 modules
+
+---
+
+## 2.7.0
+
+- Optimized drawing performance with bulk fills and reduced overhead
+- Removed mutexes for resource types to improve performance
+
+---
+
+## 2.6.5
+
+- Added `gen_bgm` function for automatic BGM generation and playback
+- Added `clamp` function
+- Added `collide` method to `Tilemap`
+
+---
+
+## 2.6.3
+
+- Added `pcm` method to `Sound` for audio playback from raw PCM data
+- Added Example 18 for audio playback
+
+---
+
+## 2.6.0
+
+- Added font rendering support using TTF and OTF font files
+- Updated Example 13 to demonstrate custom font rendering
+
+---
+
+## 2.5.9
+
+- Added `load_pal` and `save_pal` functions for palette file management
+- Enabled palette file download for new files in Pyxel Editor
+- Enabled automatic color picker size adjustment in Pyxel Editor
+
+---
+
+## 2.5.0
+
+- Added `reset` function for restarting a Pyxel application
+- Refactored the platform abstraction layer
+
+---
+
+## 2.4.0
+
+<Warning>
+  This release revamps the sound engine and MML syntax. Several API changes are breaking. See the [Migration Guide](/faq#troubleshooting) for a full list of required code changes.
+</Warning>
+
+- Renewed sound engine and MML syntax
+- Renamed `waveform` field of `Tone` to `wavetable`
+- Updated `play` and `playm` to use `sec` (seconds) instead of `tick`
+- Updated `play_pos` return value to `(sound_no, sec)`
+- Updated `Sound` and `Music` `save` methods to use `sec` instead of `count`
+- Added `total_sec` method to `Sound`
+- Added new `mml` method to `Sound`; old syntax available via `old_mml`
+- Added MML string support directly to the `play` function
+- Renamed `excl_*` options to `exclude_*` in `load` and `save`
+- Removed `incl_*` options from `load` and `save`
+
+---
+
+## 2.3.6
+
+<Warning>
+  `blt` and `bltm` rotation direction changed to **clockwise**. Code relying on the previous counter-clockwise behavior will produce incorrect results.
+</Warning>
+
+---
+
+## 2.3.2
+
+- Added `save` method to the `Sound` and `Music` classes
+
+---
+
+## 2.3.0
+
+- Added `mml` method to `Sound`
+- Updated sample rate to 22.05 kHz
+- Reduced click noise in audio playback
+
+---
+
+## 2.2.7
+
+- Added `perf_monitor` function
+- Added `integer_scale` function
+- Added integer-scale toggle with Alt(Option)+8
+- Updated default scaling to maximum
+
+---
+
+## 2.2.6
+
+- Added `user_data_dir` function for platform-appropriate save data storage
+- Renamed `WORKING_DIR` constant to `BASE_DIR`
+
+---
+
+## 2.2.1
+
+- Added the `Font` class
+- Added a `font` option to the `text` function for native font rendering
+
+---
+
+## 2.2.0
+
+- Added `rotate` and `scale` options to the `blt` and `bltm` functions
+- Added Example 16 demonstrating rotation and scaling
+
+<Warning>
+  Keyword-only arguments have been removed. Calls using keyword syntax for positional parameters in `blt`/`bltm` may need to be updated.
+</Warning>
+
+---
+
+## 2.0.0
+
+- Switched screen rendering to GLSL shaders
+- Added `screen_mode` function to change screen rendering type
+- Added `dither` function to set dithering type
+- Added `images`, `tilemaps`, `channels`, `sounds`, and `musics` as system lists
+- Switched to a new resource format based on TOML
+
+<Warning>
+  Version 2.0.0 is a major release with numerous breaking changes. Several functions and fields have been renamed or removed, and the resource file format has changed. Review the full changelog entry before upgrading.
+</Warning>

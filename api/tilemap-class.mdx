@@ -1,0 +1,204 @@
+---
+title: "Tilemap class"
+description: "Create and manipulate tile-based maps in Pyxel. Tilemap instances reference an image bank for tile graphics and support drawing functions and collision resolution."
+---
+
+## Constructor
+
+### Tilemap(width, height, img)
+
+Create a new Tilemap instance.
+
+<ParamField path="width" type="int">
+  Tilemap width.
+</ParamField>
+
+<ParamField path="height" type="int">
+  Tilemap height.
+</ParamField>
+
+<ParamField path="img" type="int/Image">
+  Image bank number (0-2) or Image instance to use as the tile source.
+</ParamField>
+
+<ResponseField name="return" type="Tilemap">
+  New Tilemap instance.
+</ResponseField>
+
+---
+
+## Class methods
+
+### Tilemap.from_tmx(filename, layer)
+
+Create a Tilemap instance from a TMX file.
+
+<ParamField path="filename" type="str">
+  TMX file name.
+</ParamField>
+
+<ParamField path="layer" type="int">
+  Layer number (0-).
+</ParamField>
+
+<ResponseField name="return" type="Tilemap">
+  Tilemap instance created from the TMX file.
+</ResponseField>
+
+---
+
+## Properties
+
+<ResponseField name="width" type="int">
+  The width of the tilemap.
+</ResponseField>
+
+<ResponseField name="height" type="int">
+  The height of the tilemap.
+</ResponseField>
+
+<ResponseField name="imgsrc" type="int/Image">
+  The image bank (0-2) or Image instance referenced by the tilemap.
+</ResponseField>
+
+---
+
+## Methods
+
+### set
+
+Set the tilemap at (x, y) using a list of strings. Each tile is a 4-digit hex value representing `(image_tx, image_ty)`, separated by spaces.
+
+<ParamField path="x" type="int">
+  X coordinate.
+</ParamField>
+
+<ParamField path="y" type="int">
+  Y coordinate.
+</ParamField>
+
+<ParamField path="data" type="list[str]">
+  Tilemap data as a list of strings. Each tile entry is a 4-digit hex value encoding (image_tx, image_ty), separated by spaces.
+</ParamField>
+
+```python
+pyxel.tilemaps[0].set(0, 0, ["0000 0100 a0b0", "0001 0101 a1b1"])
+```
+
+---
+
+### load
+
+Load a layer from a TMX file into the tilemap at (x, y).
+
+<ParamField path="x" type="int">
+  X coordinate.
+</ParamField>
+
+<ParamField path="y" type="int">
+  Y coordinate.
+</ParamField>
+
+<ParamField path="filename" type="str">
+  TMX file name.
+</ParamField>
+
+<ParamField path="layer" type="int">
+  Layer number (0-).
+</ParamField>
+
+---
+
+### pget
+
+Get the tile at (x, y). A tile is a tuple of `(image_tx, image_ty)`.
+
+<ParamField path="x" type="float">
+  X coordinate.
+</ParamField>
+
+<ParamField path="y" type="float">
+  Y coordinate.
+</ParamField>
+
+<ResponseField name="return" type="tuple[int, int]">
+  Tile as (image_tx, image_ty).
+</ResponseField>
+
+---
+
+### pset
+
+Set a tile at (x, y). A tile is a tuple of `(image_tx, image_ty)`.
+
+<ParamField path="x" type="float">
+  X coordinate.
+</ParamField>
+
+<ParamField path="y" type="float">
+  Y coordinate.
+</ParamField>
+
+<ParamField path="tile" type="tuple[int, int]">
+  Tile as (image_tx, image_ty).
+</ParamField>
+
+---
+
+### collide
+
+Resolve collisions after applying pixel movement (dx, dy) to the pixel rectangle at (x, y) with pixel size (w, h). Returns the adjusted (dx, dy). `walls` is a list of tile coordinates that act as obstacles.
+
+<ParamField path="x" type="float">
+  Rectangle X position.
+</ParamField>
+
+<ParamField path="y" type="float">
+  Rectangle Y position.
+</ParamField>
+
+<ParamField path="w" type="float">
+  Rectangle width.
+</ParamField>
+
+<ParamField path="h" type="float">
+  Rectangle height.
+</ParamField>
+
+<ParamField path="dx" type="float">
+  Movement in X.
+</ParamField>
+
+<ParamField path="dy" type="float">
+  Movement in Y.
+</ParamField>
+
+<ParamField path="walls" type="list[tuple[int, int]]">
+  List of wall tiles as (image_tx, image_ty) tuples.
+</ParamField>
+
+<ResponseField name="return" type="tuple[float, float]">
+  Adjusted (dx, dy) after collision resolution.
+</ResponseField>
+
+---
+
+## Drawing on tilemaps
+
+Tilemap instances support drawing functions from the Graphics API. They work the same way but draw tiles onto the tilemap instead of pixels on the screen. Use a tile tuple `(image_tx, image_ty)` instead of a color value.
+
+The supported functions are: `cls`, `line`, `rect`, `rectb`, `circ`, `circb`, `elli`, `ellib`, `tri`, `trib`, `fill`, `blt`, `clip`, `camera`.
+
+See the [Graphics](/api/graphics) reference for full parameter documentation.
+
+---
+
+## Advanced methods
+
+### data_ptr
+
+Return the raw data pointer of the tilemap as a ctypes `c_uint16` array. Each tile occupies 4 bytes, storing `image_tx` and `image_ty`.
+
+<ResponseField name="return" type="Any">
+  Raw data pointer (ctypes c_uint16 array, 4 bytes per tile).
+</ResponseField>

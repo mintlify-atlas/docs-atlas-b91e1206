@@ -1,0 +1,172 @@
+---
+title: "Image class"
+description: "Create and manipulate image data in Pyxel. Image instances support all graphics drawing functions and can be used as rendering targets."
+---
+
+## Constructor
+
+### Image(width, height)
+
+Create a new Image instance with the specified size.
+
+<ParamField path="width" type="int">
+  Image width.
+</ParamField>
+
+<ParamField path="height" type="int">
+  Image height.
+</ParamField>
+
+<ResponseField name="return" type="Image">
+  New Image instance.
+</ResponseField>
+
+---
+
+## Class methods
+
+### Image.from_image(filename, include_colors=False)
+
+Create an Image instance from an image file.
+
+<ParamField path="filename" type="str">
+  Image file name.
+</ParamField>
+
+<ParamField path="include_colors" type="bool" default="False">
+  Include palette colors from the file.
+</ParamField>
+
+<ResponseField name="return" type="Image">
+  Image instance created from the file.
+</ResponseField>
+
+---
+
+## Properties
+
+<ResponseField name="width" type="int">
+  The width of the image.
+</ResponseField>
+
+<ResponseField name="height" type="int">
+  The height of the image.
+</ResponseField>
+
+---
+
+## Methods
+
+### set
+
+Set the image at (x, y) using a list of hex-digit strings. Each character represents a color index (0-f).
+
+<ParamField path="x" type="int">
+  X coordinate.
+</ParamField>
+
+<ParamField path="y" type="int">
+  Y coordinate.
+</ParamField>
+
+<ParamField path="data" type="list[str]">
+  Image data as a list of strings. Each character is a hex color index.
+</ParamField>
+
+```python
+pyxel.images[0].set(10, 10, ["0123", "4567", "89ab", "cdef"])
+```
+
+---
+
+### load
+
+Load an image file (PNG/GIF/JPEG) into the image at (x, y).
+
+<ParamField path="x" type="int">
+  X coordinate.
+</ParamField>
+
+<ParamField path="y" type="int">
+  Y coordinate.
+</ParamField>
+
+<ParamField path="filename" type="str">
+  Image file name (PNG/GIF/JPEG).
+</ParamField>
+
+<ParamField path="include_colors" type="bool" default="False">
+  Include palette colors from the file.
+</ParamField>
+
+---
+
+### pget
+
+Get the color of the pixel at (x, y).
+
+<ParamField path="x" type="float">
+  X coordinate.
+</ParamField>
+
+<ParamField path="y" type="float">
+  Y coordinate.
+</ParamField>
+
+<ResponseField name="return" type="int">
+  Color of the pixel.
+</ResponseField>
+
+---
+
+### pset
+
+Draw a pixel with the specified color at (x, y).
+
+<ParamField path="x" type="float">
+  X coordinate.
+</ParamField>
+
+<ParamField path="y" type="float">
+  Y coordinate.
+</ParamField>
+
+<ParamField path="col" type="int">
+  Color.
+</ParamField>
+
+---
+
+## Drawing on images
+
+Image instances support all drawing functions from the Graphics API. They work identically to the global functions but draw onto the image rather than the screen.
+
+The supported functions are: `cls`, `line`, `rect`, `rectb`, `circ`, `circb`, `elli`, `ellib`, `tri`, `trib`, `fill`, `blt`, `bltm`, `blt3d`, `bltm3d`, `text`, `clip`, `camera`, `pal`, `dither`.
+
+See the [Graphics](/api/graphics) reference for full parameter documentation.
+
+---
+
+## Advanced methods
+
+### data_ptr
+
+Return the raw data pointer of the image as a ctypes `c_uint8` array.
+
+<ResponseField name="return" type="Any">
+  Raw data pointer (ctypes c_uint8 array).
+</ResponseField>
+
+---
+
+### save
+
+Save the image to a file.
+
+<ParamField path="filename" type="str">
+  Output file name.
+</ParamField>
+
+<ParamField path="scale" type="int">
+  Scale factor.
+</ParamField>

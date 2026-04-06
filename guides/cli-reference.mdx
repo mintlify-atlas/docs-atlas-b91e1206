@@ -1,0 +1,254 @@
+---
+title: "CLI Reference"
+description: "Complete reference for all pyxel command-line commands: run, watch, play, edit, package, app2exe, app2html, and copy_examples."
+---
+
+Installing Pyxel adds the `pyxel` command. Run it with no arguments to see all available commands:
+
+```bash
+pyxel
+```
+
+```
+Pyxel, a retro game engine for Python
+usage:
+    pyxel run PYTHON_SCRIPT_FILE(.py)
+    pyxel watch WATCH_DIR PYTHON_SCRIPT_FILE(.py)
+    pyxel play PYXEL_APP_FILE(.pyxapp)
+    pyxel edit [PYXEL_RESOURCE_FILE(.pyxres)]
+    pyxel package APP_DIR STARTUP_SCRIPT_FILE(.py)
+    pyxel app2exe PYXEL_APP_FILE(.pyxapp)
+    pyxel app2html PYXEL_APP_FILE(.pyxapp)
+    pyxel copy_examples
+```
+
+---
+
+## `pyxel run`
+
+Run a Python script file.
+
+```bash
+pyxel run PYTHON_SCRIPT_FILE(.py)
+```
+
+**Arguments:**
+
+| Argument | Description |
+|----------|-------------|
+| `PYTHON_SCRIPT_FILE` | Path to the `.py` script to execute |
+
+**Example:**
+
+```bash
+pyxel run my_game.py
+```
+
+The `.py` extension is optional — Pyxel adds it automatically if omitted.
+
+---
+
+## `pyxel watch`
+
+Run a script and automatically re-run it when any file in a directory changes. Useful during development.
+
+```bash
+pyxel watch WATCH_DIR PYTHON_SCRIPT_FILE(.py)
+```
+
+**Arguments:**
+
+| Argument | Description |
+|----------|-------------|
+| `WATCH_DIR` | Directory to monitor for file changes |
+| `PYTHON_SCRIPT_FILE` | Path to the `.py` script (must be inside `WATCH_DIR`) |
+
+**Example:**
+
+```bash
+pyxel watch . my_game.py
+```
+
+Press `Ctrl+C` to stop watching.
+
+---
+
+## `pyxel play`
+
+Run a packaged Pyxel application file.
+
+```bash
+pyxel play PYXEL_APP_FILE(.pyxapp)
+```
+
+**Arguments:**
+
+| Argument | Description |
+|----------|-------------|
+| `PYXEL_APP_FILE` | Path to the `.pyxapp` file to run |
+
+**Example:**
+
+```bash
+pyxel play my_game.pyxapp
+```
+
+If the app has metadata (title, author, etc.), it is printed to the console before launch.
+
+---
+
+## `pyxel edit`
+
+Launch the Pyxel Editor to create or edit a resource file (`.pyxres`).
+
+```bash
+pyxel edit [PYXEL_RESOURCE_FILE(.pyxres)]
+```
+
+**Arguments:**
+
+| Argument | Description |
+|----------|-------------|
+| `PYXEL_RESOURCE_FILE` | *(Optional)* Path to the `.pyxres` file. If omitted, creates `my_resource.pyxres`. |
+
+**Examples:**
+
+```bash
+# Create or open my_resource.pyxres
+pyxel edit
+
+# Open a specific resource file
+pyxel edit assets/game_assets.pyxres
+```
+
+The editor has four modes: Image, Tilemap, Sound, and Music. See the [Pyxel Editor guide](/guides/resources-and-editor) for full usage.
+
+---
+
+## `pyxel package`
+
+Package an application directory into a redistributable `.pyxapp` file.
+
+```bash
+pyxel package APP_DIR STARTUP_SCRIPT_FILE(.py)
+```
+
+**Arguments:**
+
+| Argument | Description |
+|----------|-------------|
+| `APP_DIR` | Directory containing all app files (scripts, resources, assets) |
+| `STARTUP_SCRIPT_FILE` | The main `.py` script inside `APP_DIR` |
+
+**Example:**
+
+```bash
+pyxel package my_game my_game/main.py
+```
+
+This creates `my_game.pyxapp` in the current directory. Files with `.gif` and `.zip` extensions are excluded automatically.
+
+**App metadata** is read from comments at the top of the startup script:
+
+```python
+# title: My Game
+# author: Your Name
+# desc: A fun pixel-art game
+# site: https://example.com
+# license: MIT
+# version: 1.0
+```
+
+All fields except `title` and `author` are optional.
+
+---
+
+## `pyxel app2exe`
+
+Convert a `.pyxapp` file to a standalone executable using PyInstaller.
+
+```bash
+pyxel app2exe PYXEL_APP_FILE(.pyxapp)
+```
+
+**Arguments:**
+
+| Argument | Description |
+|----------|-------------|
+| `PYXEL_APP_FILE` | Path to the `.pyxapp` file |
+
+**Example:**
+
+```bash
+pyxel app2exe my_game.pyxapp
+```
+
+<Warning>
+  PyInstaller must be installed: `pip install pyinstaller`. The resulting executable targets the current platform — cross-compilation is not supported.
+</Warning>
+
+---
+
+## `pyxel app2html`
+
+Convert a `.pyxapp` file to a self-contained HTML file that runs in any browser.
+
+```bash
+pyxel app2html PYXEL_APP_FILE(.pyxapp)
+```
+
+**Arguments:**
+
+| Argument | Description |
+|----------|-------------|
+| `PYXEL_APP_FILE` | Path to the `.pyxapp` file |
+
+**Example:**
+
+```bash
+pyxel app2html my_game.pyxapp
+# Produces: my_game.html
+```
+
+All code and assets are embedded in the HTML file. The Pyxel version is pinned at conversion time. A virtual gamepad is enabled by default for touch devices.
+
+---
+
+## `pyxel copy_examples`
+
+Copy the built-in example scripts to a `pyxel_examples` directory in the current directory.
+
+```bash
+pyxel copy_examples
+```
+
+Then run any example:
+
+```bash
+cd pyxel_examples
+pyxel run 01_hello_pyxel.py
+```
+
+**Available examples:**
+
+| File | Description |
+|------|-------------|
+| `01_hello_pyxel.py` | Basics: init, update, draw loop |
+| `02_jump_game.py` | Simple jump game |
+| `03_draw_api.py` | Drawing API showcase |
+| `04_sound_api.py` | Sound API showcase |
+| `05_color_palette.py` | Color palette display |
+| `06_click_game.py` | Mouse input |
+| `07_snake.py` | Classic Snake game |
+| `08_triangle_api.py` | Triangle drawing |
+| `09_shooter.py` | Shooter with MML audio |
+| `10_platformer.py` | Platformer with tilemaps |
+| `11_offscreen.py` | Offscreen rendering |
+| `12_perlin_noise.py` | Perlin noise terrain |
+| `13_custom_font.py` | Custom font rendering |
+| `14_synthesizer.py` | Sound synthesizer |
+| `15_tiled_map_file.py` | Loading TMX files |
+| `16_transform.py` | blt rotation and scaling |
+| `17_app_launcher.py` | App launcher UI |
+| `18_audio_playback.py` | WAV/OGG audio playback |
+| `19_perspective.py` | 3D perspective projection |

@@ -1,0 +1,320 @@
+---
+title: "Input"
+description: "Variables and functions for reading keyboard, mouse, and gamepad input, plus all input constants."
+---
+
+## Variables
+
+<ResponseField name="mouse_x" type="int">
+  The current x position of the mouse cursor.
+</ResponseField>
+
+<ResponseField name="mouse_y" type="int">
+  The current y position of the mouse cursor.
+</ResponseField>
+
+<ResponseField name="mouse_wheel" type="int">
+  The current value of the mouse wheel.
+</ResponseField>
+
+### Advanced variables
+
+<ResponseField name="input_keys" type="list[int]">
+  List of keys input in the current frame.
+</ResponseField>
+
+<ResponseField name="input_text" type="str">
+  Text input in the current frame.
+</ResponseField>
+
+<ResponseField name="dropped_files" type="list[str]">
+  List of files dropped in the current frame.
+</ResponseField>
+
+---
+
+## Functions
+
+### `btn`
+
+Return `True` if the key is currently held down, otherwise return `False`.
+
+<ParamField path="key" type="number" required>
+  Key code.
+</ParamField>
+
+<ResponseField name="returns" type="bool">
+  `True` if the key is pressed.
+</ResponseField>
+
+---
+
+### `btnp`
+
+Return `True` if the key is pressed in that frame. When `hold` and `repeat` are specified, after holding the key for `hold` frames, return `True` every `repeat` frames.
+
+<ParamField path="key" type="number" required>
+  Key code.
+</ParamField>
+
+<ParamField path="hold" type="number" default="0">
+  Number of frames to hold before repeat starts.
+</ParamField>
+
+<ParamField path="repeat" type="number" default="0">
+  Repeat interval in frames. If `0`, no repeat.
+</ParamField>
+
+<ResponseField name="returns" type="bool">
+  `True` if the key was pressed in that frame.
+</ResponseField>
+
+---
+
+### `btnr`
+
+Return `True` if the key is released in that frame, otherwise return `False`.
+
+<ParamField path="key" type="number" required>
+  Key code.
+</ParamField>
+
+<ResponseField name="returns" type="bool">
+  `True` if the key was released in that frame.
+</ResponseField>
+
+---
+
+### `mouse`
+
+Show the mouse cursor if `visible` is `True`, and hide it if `False`. The cursor position continues to update even when hidden.
+
+<ParamField path="visible" type="boolean" required>
+  Show or hide the cursor.
+</ParamField>
+
+---
+
+## Advanced functions
+
+<Note>
+  The following functions are intended for analog input reading and headless mode input simulation.
+</Note>
+
+### `btnv` <sup>Advanced</sup>
+
+Return the analog value of the specified key (e.g., a gamepad axis value).
+
+<ParamField path="key" type="number" required>
+  Key code.
+</ParamField>
+
+<ResponseField name="returns" type="int">
+  Analog value of the key.
+</ResponseField>
+
+---
+
+### `set_btn` <sup>Advanced</sup>
+
+Set the press/release state of the specified key. Primarily used for headless mode input simulation.
+
+<ParamField path="key" type="number" required>
+  Target key.
+</ParamField>
+
+<ParamField path="state" type="boolean" required>
+  `True` for press, `False` for release.
+</ParamField>
+
+---
+
+### `set_btnv` <sup>Advanced</sup>
+
+Set the analog value of the specified key. Primarily used for headless mode input simulation.
+
+<ParamField path="key" type="number" required>
+  Target key.
+</ParamField>
+
+<ParamField path="val" type="number" required>
+  Analog value to set.
+</ParamField>
+
+---
+
+### `set_mouse_pos` <sup>Advanced</sup>
+
+Set the mouse cursor position. Primarily used for headless mode input simulation.
+
+<ParamField path="x" type="number" required>
+  X coordinate.
+</ParamField>
+
+<ParamField path="y" type="number" required>
+  Y coordinate.
+</ParamField>
+
+---
+
+### `set_input_text` <sup>Advanced</sup>
+
+Set the text input for the current frame, replacing any existing text. Primarily used for headless mode input simulation.
+
+<ParamField path="text" type="string" required>
+  Text input.
+</ParamField>
+
+---
+
+### `set_dropped_files` <sup>Advanced</sup>
+
+Set the dropped file list for the current frame, replacing any existing list. Primarily used for headless mode input simulation.
+
+<ParamField path="files" type="string[]" required>
+  List of file paths.
+</ParamField>
+
+---
+
+## Constants
+
+### Key constants
+
+<AccordionGroup>
+
+  <Accordion title="Special keys">
+
+| Constant | Description |
+|---|---|
+| `KEY_UNKNOWN` | Unknown key |
+| `KEY_RETURN` | Enter / Return |
+| `KEY_ESCAPE` | Escape |
+| `KEY_BACKSPACE` | Backspace |
+| `KEY_TAB` | Tab |
+| `KEY_SPACE` | Space |
+| `KEY_NONE` | No key (used to disable quit key) |
+
+  </Accordion>
+
+  <Accordion title="Letter keys">
+
+`KEY_A` `KEY_B` `KEY_C` `KEY_D` `KEY_E` `KEY_F` `KEY_G` `KEY_H` `KEY_I` `KEY_J` `KEY_K` `KEY_L` `KEY_M` `KEY_N` `KEY_O` `KEY_P` `KEY_Q` `KEY_R` `KEY_S` `KEY_T` `KEY_U` `KEY_V` `KEY_W` `KEY_X` `KEY_Y` `KEY_Z`
+
+  </Accordion>
+
+  <Accordion title="Number keys">
+
+`KEY_0` `KEY_1` `KEY_2` `KEY_3` `KEY_4` `KEY_5` `KEY_6` `KEY_7` `KEY_8` `KEY_9`
+
+  </Accordion>
+
+  <Accordion title="Function keys">
+
+`KEY_F1` `KEY_F2` `KEY_F3` `KEY_F4` `KEY_F5` `KEY_F6` `KEY_F7` `KEY_F8` `KEY_F9` `KEY_F10` `KEY_F11` `KEY_F12` `KEY_F13` `KEY_F14` `KEY_F15` `KEY_F16` `KEY_F17` `KEY_F18` `KEY_F19` `KEY_F20` `KEY_F21` `KEY_F22` `KEY_F23` `KEY_F24`
+
+  </Accordion>
+
+  <Accordion title="Navigation keys">
+
+| Constant | Description |
+|---|---|
+| `KEY_INSERT` | Insert |
+| `KEY_HOME` | Home |
+| `KEY_PAGEUP` | Page Up |
+| `KEY_DELETE` | Delete |
+| `KEY_END` | End |
+| `KEY_PAGEDOWN` | Page Down |
+| `KEY_RIGHT` | Right arrow |
+| `KEY_LEFT` | Left arrow |
+| `KEY_DOWN` | Down arrow |
+| `KEY_UP` | Up arrow |
+
+  </Accordion>
+
+  <Accordion title="Modifier keys">
+
+| Constant | Description |
+|---|---|
+| `KEY_LCTRL` | Left Ctrl |
+| `KEY_LSHIFT` | Left Shift |
+| `KEY_LALT` | Left Alt |
+| `KEY_LGUI` | Left GUI (Win/Cmd) |
+| `KEY_RCTRL` | Right Ctrl |
+| `KEY_RSHIFT` | Right Shift |
+| `KEY_RALT` | Right Alt |
+| `KEY_RGUI` | Right GUI (Win/Cmd) |
+| `KEY_SHIFT` | Either Shift |
+| `KEY_CTRL` | Either Ctrl |
+| `KEY_ALT` | Either Alt |
+| `KEY_GUI` | Either GUI |
+| `KEY_CAPSLOCK` | Caps Lock |
+
+  </Accordion>
+
+</AccordionGroup>
+
+---
+
+### Mouse constants
+
+| Constant | Description |
+|---|---|
+| `MOUSE_POS_X` | Mouse cursor X position |
+| `MOUSE_POS_Y` | Mouse cursor Y position |
+| `MOUSE_WHEEL_X` | Mouse wheel horizontal axis |
+| `MOUSE_WHEEL_Y` | Mouse wheel vertical axis |
+| `MOUSE_BUTTON_LEFT` | Left mouse button |
+| `MOUSE_BUTTON_MIDDLE` | Middle mouse button |
+| `MOUSE_BUTTON_RIGHT` | Right mouse button |
+| `MOUSE_BUTTON_X1` | Extra mouse button 1 |
+| `MOUSE_BUTTON_X2` | Extra mouse button 2 |
+
+---
+
+### Gamepad constants
+
+Constants follow the pattern `GAMEPADn_*` for gamepads 1 through 4.
+
+<AccordionGroup>
+
+  <Accordion title="Axes (GAMEPAD1–4)">
+
+| Constant | Description |
+|---|---|
+| `GAMEPADn_AXIS_LEFTX` | Left stick horizontal axis |
+| `GAMEPADn_AXIS_LEFTY` | Left stick vertical axis |
+| `GAMEPADn_AXIS_RIGHTX` | Right stick horizontal axis |
+| `GAMEPADn_AXIS_RIGHTY` | Right stick vertical axis |
+| `GAMEPADn_AXIS_TRIGGERLEFT` | Left trigger axis |
+| `GAMEPADn_AXIS_TRIGGERRIGHT` | Right trigger axis |
+
+Replace `n` with `1`, `2`, `3`, or `4` for the corresponding gamepad.
+
+  </Accordion>
+
+  <Accordion title="Buttons (GAMEPAD1–4)">
+
+| Constant | Description |
+|---|---|
+| `GAMEPADn_BUTTON_A` | A button |
+| `GAMEPADn_BUTTON_B` | B button |
+| `GAMEPADn_BUTTON_X` | X button |
+| `GAMEPADn_BUTTON_Y` | Y button |
+| `GAMEPADn_BUTTON_BACK` | Back / Select button |
+| `GAMEPADn_BUTTON_GUIDE` | Guide / Home button |
+| `GAMEPADn_BUTTON_START` | Start button |
+| `GAMEPADn_BUTTON_LEFTSTICK` | Left stick click |
+| `GAMEPADn_BUTTON_RIGHTSTICK` | Right stick click |
+| `GAMEPADn_BUTTON_LEFTSHOULDER` | Left shoulder (LB/L1) |
+| `GAMEPADn_BUTTON_RIGHTSHOULDER` | Right shoulder (RB/R1) |
+| `GAMEPADn_BUTTON_DPAD_UP` | D-pad Up |
+| `GAMEPADn_BUTTON_DPAD_DOWN` | D-pad Down |
+| `GAMEPADn_BUTTON_DPAD_LEFT` | D-pad Left |
+| `GAMEPADn_BUTTON_DPAD_RIGHT` | D-pad Right |
+
+Replace `n` with `1`, `2`, `3`, or `4` for the corresponding gamepad.
+
+  </Accordion>
+
+</AccordionGroup>

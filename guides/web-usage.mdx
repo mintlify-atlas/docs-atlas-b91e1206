@@ -1,0 +1,170 @@
+---
+title: "Using Pyxel on the Web"
+description: "Run Pyxel apps in any browser without installing Python — using Pyxel Code Maker, Web Launcher, app2html, or HTML custom tags."
+---
+
+Pyxel for Web runs in browsers via WebAssembly. No Python or Pyxel installation is needed — works on PCs, smartphones, and tablets.
+
+There are four ways to use Pyxel on the web:
+
+| Method | Best for |
+|--------|----------|
+| Pyxel Code Maker | Writing and testing code in the browser |
+| Pyxel Web Launcher | Sharing GitHub-hosted scripts and apps |
+| `app2html` command | Self-contained HTML file distribution |
+| HTML custom tags | Embedding Pyxel into any existing web page |
+
+## Pyxel Code Maker
+
+[Pyxel Code Maker](https://kitao.github.io/pyxel/web/code-maker/) is a browser-based IDE. Open it and start writing Pyxel code immediately — no setup required.
+
+<Tip>
+  Pyxel Code Maker is the fastest way to try Pyxel. No account, no install, no configuration.
+</Tip>
+
+## Pyxel Web Launcher
+
+[Pyxel Web Launcher](https://kitao.github.io/pyxel/web/launcher/) runs Python scripts and `.pyxapp` files hosted on GitHub by URL.
+
+### URL format
+
+```
+https://kitao.github.io/pyxel/web/launcher/?<command>=<user>/<repo>/<branch>/<path>/<file-without-extension>
+```
+
+### Commands
+
+| Command | Action |
+|---------|--------|
+| `run` | Run a Python script (`.py`) |
+| `play` | Run a Pyxel app (`.pyxapp`) |
+| `edit` | Open a resource file (`.pyxres`) in Pyxel Editor |
+
+### Examples
+
+Run `src/scenes/title.py` from `taro/my_repo` on branch `main`:
+
+```
+https://kitao.github.io/pyxel/web/launcher/?run=taro/my_repo/main/src/scenes/title
+```
+
+Run a `.pyxapp` file:
+
+```
+https://kitao.github.io/pyxel/web/launcher/?play=taro/my_repo/main/dist/games/shooter
+```
+
+### Additional parameters
+
+| Parameter | Description |
+|-----------|-------------|
+| `gamepad=enabled` | Show a virtual gamepad on touch devices |
+
+Example with gamepad:
+
+```
+https://kitao.github.io/pyxel/web/launcher/?run=taro/my_repo/main/src/scenes/title&gamepad=enabled
+```
+
+For the `edit` command, use the `editor` parameter to choose which editor opens:
+
+```
+https://kitao.github.io/pyxel/web/launcher/?edit=taro/my_repo/main/assets/shooter&editor=tilemap
+```
+
+Valid values for `editor`: `image`, `tilemap`, `sound`, `music`.
+
+<Note>
+  For apps with multiple Python files, bundle them into a `.pyxapp` first with `pyxel package` — it loads faster via the Web Launcher.
+</Note>
+
+## app2html command
+
+Convert any `.pyxapp` file to a self-contained HTML file:
+
+```bash
+pyxel app2html your_app.pyxapp
+```
+
+This embeds all code and assets into a single HTML file. The Pyxel version is pinned to the one used at conversion time, so future Pyxel updates won't change your app's behavior.
+
+The virtual gamepad is enabled by default and auto-shown on touch devices. To disable it, remove `gamepad: "enabled"` from the generated HTML.
+
+## HTML custom tags
+
+Embed Pyxel directly in any HTML page using custom elements.
+
+### Setup
+
+Add the Pyxel script to your HTML — this loads the latest version:
+
+```html
+<script src="https://cdn.jsdelivr.net/gh/kitao/pyxel/wasm/pyxel.js"></script>
+```
+
+To pin a specific version:
+
+```html
+<script src="https://cdn.jsdelivr.net/gh/kitao/pyxel@v2.8.7/wasm/pyxel.js"></script>
+```
+
+### `pyxel-run` — run a Python script
+
+Inline Python code:
+
+```html
+<pyxel-run
+  script="
+import pyxel
+pyxel.init(200, 150)
+pyxel.cls(8)
+pyxel.line(20, 20, 180, 130, 7)
+pyxel.show()
+"
+></pyxel-run>
+```
+
+Load an external file:
+
+```html
+<pyxel-run root="." name="game.py"></pyxel-run>
+```
+
+If `root` is `.` (current directory), you can omit the `root` attribute.
+
+### `pyxel-play` — run a `.pyxapp` file
+
+```html
+<pyxel-play
+  root="https://cdn.jsdelivr.net/gh/kitao/pyxel/python/pyxel/examples/apps"
+  name="megaball.pyxapp"
+></pyxel-play>
+```
+
+A URL can be specified for `root`.
+
+### `pyxel-edit` — open the Pyxel Editor
+
+```html
+<pyxel-edit root="assets" name="shooter.pyxres" editor="image"></pyxel-edit>
+```
+
+### Common attributes
+
+| Attribute | Description |
+|-----------|-------------|
+| `gamepad="enabled"` | Show virtual gamepad on touch devices |
+
+### Controlling the display area
+
+By default the Pyxel canvas fills the whole page. To constrain it, add a `<div id="pyxel-screen">` to your HTML — Pyxel renders inside it.
+
+### Running locally
+
+Custom tags that load external files require a local server (browser security blocks direct file access):
+
+```bash
+python -m http.server
+```
+
+Then open `http://localhost:8000/your_page.html`.

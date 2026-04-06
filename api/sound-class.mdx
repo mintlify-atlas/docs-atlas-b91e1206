@@ -1,0 +1,325 @@
+---
+title: "Sound class"
+description: "Define and play sounds in Pyxel using note strings, MML, or PCM audio files."
+---
+
+The `Sound` class represents a single sound slot. Pyxel provides 64 built-in sound slots accessed via `pyxel.sounds[0–63]`. You can define notes, tones, volumes, and effects as strings, switch to MML mode for richer composition, or load a WAV/OGG file in PCM mode.
+
+<Note>
+  You can construct a `Sound` instance directly with `Sound()` as part of the advanced API. For most use cases, edit the built-in slots through `pyxel.sounds`.
+</Note>
+
+## Constructor
+
+```python
+sound = pyxel.Sound()
+```
+
+Create a new `Sound` instance.
+
+## Properties
+
+<ParamField path="Sound.notes" type="list[int]">
+  List of note values (0–59). Higher values produce higher pitches. Note 33 corresponds to A2 (440 Hz). A value of `-1` represents a rest.
+</ParamField>
+
+<ParamField path="Sound.tones" type="list[int]">
+  List of tone types for each note:
+  - `0`: Triangle
+  - `1`: Square
+  - `2`: Pulse
+  - `3`: Noise
+</ParamField>
+
+<ParamField path="Sound.volumes" type="list[int]">
+  List of volume values (0–7) for each note, where 0 is silent and 7 is loudest.
+</ParamField>
+
+<ParamField path="Sound.effects" type="list[int]">
+  List of effects applied to each note:
+  - `0`: None
+  - `1`: Slide
+  - `2`: Vibrato
+  - `3`: FadeOut
+  - `4`: Half-FadeOut
+  - `5`: Quarter-FadeOut
+</ParamField>
+
+<ParamField path="Sound.speed" type="int">
+  Playback speed. `1` is the fastest. Larger values slow playback down. At `120`, one note lasts exactly 1 second.
+</ParamField>
+
+## Methods
+
+### set
+
+```python
+sound.set(notes, tones, volumes, effects, speed)
+```
+
+Set all sound parameters at once using strings.
+
+If `tones`, `volumes`, or `effects` is shorter than `notes`, it repeats from the beginning.
+
+<ParamField path="notes" type="str" required>
+  Note string (see `set_notes` for format).
+</ParamField>
+
+<ParamField path="tones" type="str" required>
+  Tone string (see `set_tones` for format).
+</ParamField>
+
+<ParamField path="volumes" type="str" required>
+  Volume string (see `set_volumes` for format).
+</ParamField>
+
+<ParamField path="effects" type="str" required>
+  Effect string (see `set_effects` for format).
+</ParamField>
+
+<ParamField path="speed" type="int" required>
+  Playback speed.
+</ParamField>
+
+```python
+pyxel.sounds[0].set("g2b-2d3r rf3f3f3", "s", "7", "n", 30)
+```
+
+---
+
+### set_notes
+
+```python
+sound.set_notes(notes)
+```
+
+Set the notes using a string of note names. Whitespace is ignored and the string is case-insensitive.
+
+**Note name format:** `<pitch><sharp/flat><octave>` or `R` for a rest.
+
+- Pitches: `C` `D` `E` `F` `G` `A` `B`
+- Accidentals: `#` (sharp) or `-` (flat)
+- Octave: `0`–`4`
+- Rest: `R`
+
+<ParamField path="notes" type="str" required>
+  Note name string.
+</ParamField>
+
+```python
+pyxel.sounds[0].set_notes("g2b-2d3r rf3f3f3")
+```
+
+---
+
+### set_tones
+
+```python
+sound.set_tones(tones)
+```
+
+Set the tones with a character string. Whitespace is ignored and the string is case-insensitive.
+
+| Character | Tone |
+| --- | --- |
+| `T` | Triangle (0) |
+| `S` | Square (1) |
+| `P` | Pulse (2) |
+| `N` | Noise (3) |
+| `0`–`9` | Custom tone number |
+
+<ParamField path="tones" type="str" required>
+  Tone character string.
+</ParamField>
+
+```python
+pyxel.sounds[0].set_tones("ttss pppn")
+```
+
+---
+
+### set_volumes
+
+```python
+sound.set_volumes(volumes)
+```
+
+Set the volumes with a character string of digits `0`–`7`. Whitespace is ignored.
+
+<ParamField path="volumes" type="str" required>
+  Volume digit string.
+</ParamField>
+
+```python
+pyxel.sounds[0].set_volumes("7777 7531")
+```
+
+---
+
+### set_effects
+
+```python
+sound.set_effects(effects)
+```
+
+Set the effects with a character string. Whitespace is ignored and the string is case-insensitive.
+
+| Character | Effect |
+| --- | --- |
+| `N` | None (0) |
+| `S` | Slide (1) |
+| `V` | Vibrato (2) |
+| `F` | FadeOut (3) |
+| `H` | Half-FadeOut (4) |
+| `Q` | Quarter-FadeOut (5) |
+
+<ParamField path="effects" type="str" required>
+  Effect character string.
+</ParamField>
+
+```python
+pyxel.sounds[0].set_effects("nfnf nvvs")
+```
+
+---
+
+### mml
+
+```python
+sound.mml(code)
+sound.mml()
+```
+
+Switch to MML (Music Macro Language) mode using the given MML string. In MML mode, the `notes`, `tones`, `volumes`, `effects`, and `speed` properties are ignored. Call `mml()` with no arguments to exit MML mode and return to normal mode.
+
+<ParamField path="code" type="str">
+  MML string. Omit to exit MML mode.
+</ParamField>
+
+MML commands include:
+
+| Command | Description |
+| --- | --- |
+| `T <bpm>` | Set tempo. Default: 120. |
+| `Q <gate_percent>` | Gate time as a percentage (0–100). Default: 80. |
+| `@ <tone>` | Set tone (0–3). Default: 0 (Triangle). |
+| `V <vol>` | Set volume (0–127). Default: 100. |
+| `K <semitones>` | Transpose by semitones. |
+| `O <oct>` | Set octave (−1 to 9). `O4`'s A is 440 Hz. |
+| `>` / `<` | Raise / lower octave by 1. |
+| `L <len>` | Default note length. `L4` = quarter note. |
+| `C`–`B` | Play a note. Append length, e.g. `F16`. |
+| `R` | Rest. Append length, e.g. `R8`. |
+| `#` / `+` / `-` | Raise / lower note by a semitone. |
+| `.` | Dotted note (extends length by half). |
+| `&` | Tie or slur. |
+| `[ ... ] <count>` | Repeat section. Omit count for infinite loop. |
+
+See the [MML music guide](/guides/mml-music) for complete command documentation.
+
+```python
+pyxel.sounds[0].mml("T120 Q90 @1 V100 O5 L8 C4&C<G16R16>C.")
+
+# Exit MML mode
+pyxel.sounds[0].mml()
+```
+
+---
+
+### pcm
+
+```python
+sound.pcm(filename)
+sound.pcm()
+```
+
+Load an audio file for playback in PCM mode. Supported formats are WAV and OGG. Call `pcm()` with no arguments to exit PCM mode and return to normal mode.
+
+<ParamField path="filename" type="str">
+  Path to the audio file (WAV or OGG). Omit to exit PCM mode.
+</ParamField>
+
+```python
+pyxel.sounds[0].pcm("sounds/bgm.ogg")
+
+# Exit PCM mode
+pyxel.sounds[0].pcm()
+```
+
+---
+
+### save
+
+<Note>
+  `save` is part of the advanced API.
+</Note>
+
+```python
+sound.save(filename, sec, ffmpeg=False)
+```
+
+Export the sound as a WAV file.
+
+<ParamField path="filename" type="str" required>
+  Output WAV file path.
+</ParamField>
+
+<ParamField path="sec" type="float" required>
+  Duration to export in seconds.
+</ParamField>
+
+<ParamField path="ffmpeg" type="bool" default="false">
+  Also export an MP4 file using FFmpeg (requires FFmpeg to be installed).
+</ParamField>
+
+---
+
+### total_sec
+
+<Note>
+  `total_sec` is part of the advanced API.
+</Note>
+
+```python
+sound.total_sec()
+```
+
+<ResponseField name="returns" type="float | None">
+  The total playback duration in seconds, or `None` if the sound loops infinitely.
+</ResponseField>
+
+```python
+duration = pyxel.sounds[0].total_sec()
+if duration is not None:
+    print(f"Sound is {duration:.2f} seconds long")
+```
+
+## Example: building a sound from scratch
+
+```python
+import pyxel
+
+pyxel.init(160, 120)
+
+# Define a simple arpeggio on sound slot 0
+pyxel.sounds[0].set_notes("c2e2g2c3")
+pyxel.sounds[0].set_tones("ssss")
+pyxel.sounds[0].set_volumes("7777")
+pyxel.sounds[0].set_effects("nnnn")
+pyxel.sounds[0].speed = 20
+
+# Or use MML for richer control
+pyxel.sounds[1].mml("T140 @1 O4 L16 CEGCEGCE")
+
+def update():
+    if pyxel.btnp(pyxel.KEY_1):
+        pyxel.play(0, 0)
+    if pyxel.btnp(pyxel.KEY_2):
+        pyxel.play(0, 1)
+
+def draw():
+    pyxel.cls(0)
+    pyxel.text(4, 4, "1: arpeggio  2: MML", 7)
+
+pyxel.run(update, draw)
+```
